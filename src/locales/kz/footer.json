@@ -1,0 +1,20 @@
+{
+    "footer": {
+        "openGovTitle": "OpenGov.kz",
+        "openGovDescription": "Қазақстанда ашық мемлекетті дамыту",
+        "navigation": "Навигация",
+        "home": "Басты бет",
+        "aboutUs": "Біз туралы",
+        "news": "Жаңалықтар",
+        "communityMembers": "Қоғам мүшелері",
+        "projects": "Жобалар",
+        "resources": "Ресурстар",
+        "openData": "Ашық деректер",
+        "documentation": "Құжаттама",
+        "api": "API",
+        "tools": "Құралдар",
+        "subscribe": "Жаңалықтарға жазылу",
+        "emailPlaceholder": "Сіздің электрондық поштаңыз",
+        "rights": "© 2024 OpenGov.kz. Барлық құқықтар қорғалған."
+    }
+}

@@ -1,0 +1,33 @@
+.card {
+    padding: 20px;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    width: fit-content;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.card .group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.card .group_inner {
+    display: flex;
+    gap: 10px;
+}
+
+.card .name {
+    font-weight: 600;
+    font-size: 16px;
+    width: 50%;
+}
+
+.card .profession {
+    width: 50%;
+    font-weight: 400;
+    font-size: 14px;
+    color: #4B5563;
+}

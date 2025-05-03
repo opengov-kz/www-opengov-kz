@@ -1,0 +1,16 @@
+{
+    "title": "Projects",
+    "description1": "Open data is a powerful tool for change. Here you will find projects that use government data to create new services, increase transparency, and improve citizens' lives.",
+    "description2": "Explore the projects, join initiatives, or share your own ideas!",
+    "searchPlaceholder": "Search projects",
+    "categories": {
+        "finance": "Finance",
+        "ecology": "Ecology",
+        "transport": "Transport",
+        "healthcare": "Healthcare",
+        "education": "Education",
+        "urbanism": "Urbanism",
+        "all": "All categories"
+    },
+    "more": "Learn more"
+}

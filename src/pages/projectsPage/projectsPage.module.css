@@ -1,0 +1,197 @@
+.first_block {
+    padding: 50px 0;
+    border-top: 1px solid #E5E7EB;
+}
+
+.first_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.first_block .first_block_inner .title {
+    font-weight: 700;
+    font-size: 36px;
+}
+
+.first_block .first_block_inner .description {
+    font-weight: 400;
+    font-size: 18px;
+    color: #666666;
+}
+
+.second_block {
+    padding: 25px 0;
+    border-top: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.second_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.searchInput {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    flex: 1;
+    /* Чтобы инпут занимал всё оставшееся место */
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+}
+
+.filterButton {
+    padding: 10px 15px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filterButton:hover {
+    background-color: #DBEAFE;
+}
+
+.third_block {
+    padding: 50px 0;
+}
+
+.third_block_inner {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.third_block .cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.third_block .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.third_block .pageButton {
+    width: 40px;
+    height: 40px;
+    background-color: #EFF6FF;
+    border: 1px solid #DBEAFE;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A56DB;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.third_block .pageButton:hover {
+    background-color: #DBEAFE;
+}
+
+.third_block .pageButton:focus {
+    outline: none;
+    background-color: #1A56DB;
+    color: #ffffff;
+}
+
+/* Планшеты: до 1024px */
+@media (max-width: 1024px) {
+    .first_block_inner {
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .first_block .first_block_inner .title {
+        font-size: 30px;
+    }
+
+    .first_block .first_block_inner .description {
+        font-size: 16px;
+    }
+
+    .second_block_inner {
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .filters {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .third_block .cards {
+        justify-content: center;
+    }
+}
+
+/* Мобильные устройства: до 768px */
+@media (max-width: 768px) {
+    .first_block_inner {
+        padding: 0 20px;
+        gap: 20px;
+    }
+
+    .first_block .first_block_inner .title {
+        font-size: 26px;
+    }
+
+    .first_block .first_block_inner .description {
+        font-size: 14px;
+    }
+
+    .second_block_inner {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .searchInput {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .filters {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .filterButton {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .third_block .cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .third_block .pagination {
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 30px;
+    }
+
+    .third_block .pageButton {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}

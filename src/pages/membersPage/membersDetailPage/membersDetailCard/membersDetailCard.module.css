@@ -1,0 +1,37 @@
+.card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 500px;
+    border-radius: 12px;
+    border: 2px solid #E5E7EB;
+}
+
+.card .tite {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.card .description {
+    font-weight: 400;
+    font-size: 16px;
+    color: #4B5563;
+}
+
+.more {
+    padding: 10px 15px;
+    background-color: #1A56DB;
+    color: #FFF;
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #1A56DB;
+    transition: 0.5s ease;
+    width: fit-content;
+}
+
+.more:hover {
+    background-color: #FFF;
+    color: #1A56DB;
+}

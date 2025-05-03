@@ -1,0 +1,15 @@
+{
+    "title": "News",
+    "description": "Current news and updates on Open Government",
+    "searchPlaceholder": "Search news",
+    "categories": {
+        "technology": "Technology",
+        "law": "Law",
+        "education": "Education",
+        "blockchain": "Blockchain",
+        "society": "Society",
+        "business": "Business",
+        "all": "All categories"
+    },
+    "more": "Read more"
+}

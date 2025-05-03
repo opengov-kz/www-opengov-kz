@@ -1,0 +1,20 @@
+{
+    "footer": {
+        "openGovTitle": "OpenGov.kz",
+        "openGovDescription": "Development of Open Government in Kazakhstan",
+        "navigation": "Navigation",
+        "home": "Home",
+        "aboutUs": "About Us",
+        "news": "News",
+        "communityMembers": "Community Members",
+        "projects": "Projects",
+        "resources": "Resources",
+        "openData": "Open Data",
+        "documentation": "Documentation",
+        "api": "API",
+        "tools": "Tools",
+        "subscribe": "Subscribe to News",
+        "emailPlaceholder": "Your email",
+        "rights": "© 2024 OpenGov.kz. All rights reserved."
+    }
+}

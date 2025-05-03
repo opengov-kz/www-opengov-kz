@@ -1,0 +1,27 @@
+{
+    "newsDetail": {
+        "title": "New Open Data Platform Launched in Kazakhstan",
+        "date": "15.02.2024",
+        "author": "Alexander Petrov",
+        "status": "Published",
+        "tags": [
+            "Open Data",
+            "Digitalization",
+            "Government"
+        ],
+        "imageAlt": "Open Data Platform",
+        "info": "The Ministry of Digital Development of Kazakhstan has announced the launch of an updated open data platform designed to enhance government transparency and provide easier access to information for citizens.",
+        "blueText": "Main Advantages of the New Platform",
+        "list": [
+            "Improved user interface",
+            "Enhanced data search capabilities",
+            "Integration with international platforms",
+            "Support for machine-readable formats"
+        ],
+        "quote": "\"Open data is a key element of the digital transformation of public administration and the development of Kazakhstan's digital economy\"",
+        "moreInfo": "The platform provides access to over 10,000 datasets from various government agencies, including statistical information, budget data, government procurement information, and much more.",
+        "share": "Share",
+        "similarArticles": "Similar Articles",
+        "backToNews": "Back to news list"
+    }
+}

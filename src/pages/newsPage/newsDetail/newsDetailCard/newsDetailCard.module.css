@@ -1,0 +1,19 @@
+.card {
+    width: 240px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card .title {
+    color: #1A56DB;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.card .date {
+    color: #1A56DB;
+    font-weight: 400;
+    font-size: 14px;
+}

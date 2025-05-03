@@ -1,0 +1,20 @@
+{
+    "footer": {
+        "openGovTitle": "OpenGov.kz",
+        "openGovDescription": "Развитие открытого государства в Казахстане",
+        "navigation": "Навигация",
+        "home": "Главная",
+        "aboutUs": "О нас",
+        "news": "Новости",
+        "communityMembers": "Участники сообщества",
+        "projects": "Проекты",
+        "resources": "Ресурсы",
+        "openData": "Открытые данные",
+        "documentation": "Документация",
+        "api": "API",
+        "tools": "Инструменты",
+        "subscribe": "Подписаться на новости",
+        "emailPlaceholder": "Ваш email",
+        "rights": "© 2024 OpenGov.kz. Все права защищены."
+    }
+}

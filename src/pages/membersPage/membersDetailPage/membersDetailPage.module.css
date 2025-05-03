@@ -1,0 +1,105 @@
+.first_block {
+    padding: 50px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.first_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    gap: 40px;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.first_block .title {
+    font-weight: 600;
+    font-size: 36px;
+    color: #1A56DB;
+}
+
+.first_block .tag {
+    font-weight: 400;
+    font-size: 20px;
+    color: #1A56DB;
+}
+
+.first_block .profession {
+    font-weight: 500;
+    font-size: 24px;
+    color: #4B5563;
+}
+
+.first_block .group_inner {
+    display: flex;
+    gap: 20px;
+}
+
+.second_block {
+    padding: 50px;
+}
+
+.second_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.second_block .title {
+    font-weight: 600;
+    font-size: 30px;
+    color: #1A56DB;
+}
+
+.second_block .description {
+    font-weight: 400;
+    font-size: 16px;
+    color: #4B5563;
+}
+
+.third_block {
+    padding: 50px;
+}
+
+.third_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.third_block .title {
+    font-weight: 600;
+    font-size: 36px;
+    color: #1A56DB;
+}
+
+.third_block .cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.third_block .button {
+    border: 2px solid #1A56DB;
+    border-radius: 8px;
+    color: #1A56DB;
+    width: 30%;
+    padding: 15px 0;
+    transition: 0.5s ease;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.third_block .button:hover {
+    background-color: #1A56DB;
+    color: #FFF;
+}

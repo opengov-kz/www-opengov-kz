@@ -1,0 +1,88 @@
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: #e5e5e5 1px 1px 10px;
+    width: 570px;
+    height: 400px;
+    overflow: hidden;
+}
+
+.card .group {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 55%;
+    /* <--- Добавь это */
+}
+
+.card .tag {
+    background-color: #DBEAFE;
+    width: fit-content;
+    border-radius: 999px;
+    padding: 5px 10px;
+    color: #1A56DB;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.card .title {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.card .description {
+    font-weight: 400;
+    font-size: 16px;
+    color: #4B5563;
+}
+
+.card .more {
+    color: #1A56DB;
+}
+
+/* Планшеты: до 1024px */
+@media (max-width: 1024px) {
+    .card {
+        width: 100%;
+    }
+}
+
+/* Мобильные устройства: до 768px */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .card .group {
+        padding: 20px;
+        height: auto;
+        gap: 12px;
+    }
+
+    .card .tag {
+        font-size: 14px;
+    }
+
+    .card .title {
+        font-size: 18px;
+    }
+
+    .card .description {
+        font-size: 14px;
+    }
+
+    .card .more {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+}

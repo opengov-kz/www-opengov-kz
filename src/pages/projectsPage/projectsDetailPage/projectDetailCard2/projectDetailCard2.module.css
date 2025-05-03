@@ -1,0 +1,27 @@
+.card {
+    width: 240px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+}
+
+.card .title {
+    color: #1A56DB;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.card .description {
+    color: #4B5563;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.group {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

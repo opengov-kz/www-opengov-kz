@@ -1,0 +1,157 @@
+body {
+  font-family: "Inter";
+  background-color: #fff;
+}
+
+/* Основной хедер (десктоп) */
+header {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+  justify-content: space-between;
+  height: 80px;
+  position: relative;
+}
+
+.logo {
+  color: #1A56DB;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Меню навигации */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav_list {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 30px;
+}
+
+.nav_list .nav_item a {
+  color: #4B5563;
+  transition: color 0.3s ease;
+  position: relative;
+  text-decoration: none;
+  padding: 10px 0;
+}
+
+.nav_list .nav_item a:hover {
+  color: #1A56DB;
+}
+
+.nav_list .nav_item a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: 4px;
+  left: 1px;
+  background-color: #1A56DB;
+  transition: width 0.3s ease;
+}
+
+.nav_list .nav_item a:hover::after,
+.nav_list .nav_item a.active::after {
+  width: 100%;
+}
+
+.nav_list .nav_item a.active {
+  color: #1A56DB;
+  font-weight: 600;
+}
+
+.lang_list {
+  display: flex;
+  background-color: #F3F4F6;
+  border-radius: 999px;
+}
+
+.lang_list .lang_item {
+  padding: 8px 15px;
+  color: #4B5563;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.lang_list .lang_item:hover {
+  color: #1A56DB;
+}
+
+.lang_list .lang_item.active {
+  color: #ffffff;
+  background-color: #1A56DB;
+  border-radius: 999px;
+}
+
+.lang_list .lang_item:not(:last-child) {
+  border-right: 2px solid #D1D5DB;
+}
+
+/* Бургер */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.burger_line {
+  width: 25px;
+  height: 3px;
+  background-color: #1A56DB;
+  transition: 0.3s ease;
+}
+
+/* 📱 Мобильные устройства (меню по кнопке) */
+@media (max-width: 768px) {
+
+  header {
+    padding: 0 20px;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .nav {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
+  }
+
+  .show {
+    display: flex;
+  }
+
+  .nav_list {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .lang_list {
+    margin-top: 10px;
+    justify-content: center;
+    width: 100%;
+  }
+}

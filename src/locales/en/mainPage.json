@@ -1,0 +1,74 @@
+{
+    "mainPage": {
+        "title1": "Open Government in Kazakhstan — transparency, accessibility, participation.",
+        "description1": "We believe in public participation, open data, and accessible government information for a better future of Kazakhstan.",
+        "learnMore": "Learn more",
+        "title2": "What is Open Government?",
+        "description2": "Open Government is a concept where government data, decisions, and processes are made as accessible as possible to citizens.",
+        "card1": {
+            "title": "Transparency",
+            "desc": "Government data and processes are made accessible to citizens, ensuring accountability and openness."
+        },
+        "card2": {
+            "title": "Public Participation",
+            "desc": "Citizens can actively participate in decision-making and influence public policy."
+        },
+        "card3": {
+            "title": "Collaboration",
+            "desc": "Cooperation between the government, citizens, and businesses to achieve common goals."
+        },
+        "title3": "What is Open Data?",
+        "description3": "Open data is information published by the government that is freely accessible and can be used, analyzed, and applied for the public good.",
+        "data1": "Budget data",
+        "data2": "Transport information",
+        "data3": "Environmental indicators",
+        "data4": "Public procurement data",
+        "title4": "How does it work in Kazakhstan?",
+        "card4": {
+            "title": "Legal framework",
+            "desc": "Regulations ensuring the openness of government data"
+        },
+        "card5": {
+            "title": "Databases",
+            "desc": "Access to government information resources"
+        },
+        "card6": {
+            "title": "Monitoring",
+            "desc": "Tracking the effectiveness of public programs"
+        },
+        "card7": {
+            "title": "Innovation",
+            "desc": "Development of new technologies in public administration"
+        },
+        "newsTitle": "Latest News",
+        "news1": {
+            "title": "New Open Data Portal",
+            "desc": "An updated version of the portal has been launched with expanded data analysis capabilities."
+        },
+        "news2": {
+            "title": "International Cooperation",
+            "desc": "Kazakhstan has joined an international open data initiative."
+        },
+        "news3": {
+            "title": "Open Data Forum",
+            "desc": "The annual Open Data and Innovation Forum was held in Astana."
+        },
+        "projectTitle": "Current Projects",
+        "project1": {
+            "title": "Budget Portal",
+            "status": "In development",
+            "desc": "Visualization and analysis of the state budget"
+        },
+        "project2": {
+            "title": "Environmental Monitoring",
+            "status": "Active",
+            "desc": "A system for monitoring environmental indicators"
+        },
+        "project3": {
+            "title": "Open Legal Acts",
+            "status": "Completed",
+            "desc": "Public discussion of legal regulations"
+        },
+        "more": "More"
+    }
+}

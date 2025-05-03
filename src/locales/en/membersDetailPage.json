@@ -1,0 +1,36 @@
+{
+    "member": {
+        "name": "Dias Yermek",
+        "profession": "Lead Data Developer"
+    },
+    "about": {
+        "title": "About",
+        "description": [
+            "Over 8 years of experience in data analysis and development. Specializes in building tools for open data visualization and integration. Active member of the OpenGov community since 2019.",
+            "Develops solutions to increase transparency of government data and make it more accessible to citizens. Author of several successful public budget visualization projects.",
+            "Develops solutions to increase transparency of government data and make it more accessible to citizens. Author of several successful public budget visualization projects."
+        ]
+    },
+    "projects": {
+        "title": "Projects",
+        "backButton": "Back to members list",
+        "list": [
+            {
+                "title": "Budget Portal",
+                "description": "Interactive platform for visualization and analysis of Kazakhstan’s state budget. A tool to improve budget process transparency."
+            },
+            {
+                "title": "Open Legal Acts",
+                "description": "System for public discussion of legal acts. Simplifies citizen access to legislative processes."
+            },
+            {
+                "title": "Infrastructure Map",
+                "description": "Interactive map of social infrastructure in Kazakhstan cities. Helps citizens locate important sites and assess their availability."
+            },
+            {
+                "title": "Procurement Dashboard",
+                "description": "Analytical panel for monitoring public procurement. Ensures process transparency and highlights potential violations."
+            }
+        ]
+    }
+}

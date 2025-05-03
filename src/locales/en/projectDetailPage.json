@@ -1,0 +1,49 @@
+{
+    "projectDetail": {
+        "title": "QBS Solutions Platform",
+        "status": "Completed project",
+        "period": "January 2023 — May 2023",
+        "description1": "QBS Solutions is an open-source platform for non-profit organizations. It helps automate financial reporting and enhance public oversight.",
+        "blueText": "Key Objectives of the Project",
+        "tasks": [
+            "Analysis of existing solutions",
+            "Development of new platform architecture",
+            "Creation of an MVP with core features",
+            "Publishing open source code on GitHub"
+        ],
+        "description2": "As of now, the platform has been tested by over 20 organizations. Users appreciate its intuitive interface and usability.",
+        "projectWebsite": "Project Website",
+        "github": "View on GitHub",
+        "teamTitle": "Project Team",
+        "team": [
+            {
+                "role": "Full-stack Developer",
+                "name": "Alexander Petrov"
+            },
+            {
+                "role": "UX/UI Designer",
+                "name": "Aigul Satpayeva"
+            },
+            {
+                "role": "Project Manager",
+                "name": "Maxim Ivanov"
+            }
+        ],
+        "similarProjectsTitle": "Similar Projects",
+        "similarProjects": [
+            {
+                "title": "E-Health Monitor",
+                "description": "Monitoring system for evaluating medical institutions"
+            },
+            {
+                "title": "EduControl",
+                "description": "Dashboard for education quality control"
+            },
+            {
+                "title": "OpenBudget",
+                "description": "Web service for analyzing government budget spending"
+            }
+        ],
+        "backToProjects": "Back to project list"
+    }
+}

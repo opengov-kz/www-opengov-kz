@@ -1,0 +1,178 @@
+footer {
+    background-color: #111827;
+    color: #fff;
+    padding: 30px 0;
+}
+
+.footer_inner {
+    margin: 60px 0;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.upper_footer {
+    max-width: 1200px;
+    height: 180px;
+    margin: auto;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.nav_list .nav_item a {
+    color: #9CA3AF;
+    transition: 0.5s ease;
+}
+
+.nav_list .nav_item a:hover {
+    color: #1A56DB;
+}
+
+.first_col {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.second_col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+    /* или можно flex-grow: 1, если хочешь */
+}
+
+.second_col nav {
+    flex-grow: 1;
+    /* Чтобы nav занимал всё оставшееся место */
+    display: flex;
+}
+
+.nav_list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav_item {
+    text-align: left;
+}
+
+.third_col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+}
+
+.third_col nav {
+    flex-grow: 1;
+    display: flex;
+}
+
+.soc_media {
+    display: flex;
+    gap: 16px;
+}
+
+.description {
+    color: #9CA3AF;
+}
+
+
+.fourth_col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user_ineraction input {
+    background-color: #1F2937;
+    padding: 10px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.user_ineraction button {
+    background-color: #1A56DB;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.lower_footer {
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+    color: #9CA3AF;
+    padding-top: 35px;
+    margin-top: 35px;
+    border-top: 1px solid #1F2937;
+    align-items: center;
+}
+
+/* Планшеты: ширина до 1024px */
+@media (max-width: 1024px) {
+    .upper_footer {
+        flex-wrap: wrap;
+        height: auto;
+        gap: 40px;
+        padding: 0 20px;
+    }
+
+    .first_col,
+    .second_col,
+    .third_col,
+    .fourth_col {
+        flex: 1 1 45%;
+    }
+
+    .fourth_col {
+        align-items: flex-start;
+    }
+}
+
+/* Мобильные устройства: ширина до 768px */
+@media (max-width: 768px) {
+    .upper_footer {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 0 20px;
+        gap: 30px;
+    }
+
+    .first_col,
+    .second_col,
+    .third_col,
+    .fourth_col {
+        width: 100%;
+    }
+
+    .user_ineraction {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .user_ineraction input {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .user_ineraction button {
+        width: 100%;
+    }
+
+    .lower_footer {
+        padding: 0 20px;
+    }
+}

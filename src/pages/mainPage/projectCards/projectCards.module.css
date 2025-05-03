@@ -1,0 +1,95 @@
+.card {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    height: 235px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: #e5e5e5 1px 1px 10px;
+    justify-content: space-between;
+}
+
+/* Верхняя часть */
+.upperGroup {
+    display: flex;
+}
+
+.upperGroup img {
+    background-color: #EFF6FF;
+    padding: 10px;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.status {
+    font-weight: 400;
+    font-size: 12px;
+    background-color: #DBEAFE;
+    color: #1A56DB;
+    padding: 5px 10px;
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.statusCompleted {
+    background-color: #D1FAE5;
+    color: #10B981;
+}
+
+/* Нижняя часть */
+.lowerGroup {
+    margin-top: 20px;
+}
+
+.description {
+    color: #4B5563;
+    font-weight: 400;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Прогресс-бар */
+.progressContainer {
+    margin-bottom: 10px;
+}
+
+.progressBar {
+    background-color: #E5E7EB;
+    border-radius: 999px;
+    overflow: hidden;
+    height: 8px;
+    width: 100%;
+}
+
+.progressFill {
+    background-color: #1A56DB;
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.progressText {
+    font-size: 14px;
+    color: #4B5563;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* Ссылка "Подробнее" */
+.moreProject {
+    color: #1A56DB;
+    font-weight: 500;
+    font-size: 16px;
+    text-decoration: none;
+}

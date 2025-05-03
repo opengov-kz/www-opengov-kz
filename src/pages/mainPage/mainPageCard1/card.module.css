@@ -1,0 +1,67 @@
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    width: 380px;
+    height: 300px;
+    box-shadow: #e5e5e5 1px 1px 10px;
+
+    .card_inner {
+        text-align: left;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        img {
+            width: 70px;
+            background-color: #EFF6FF;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .description {
+            font-weight: 400;
+            color: #4B5563;
+        }
+    }
+}
+
+/* Планшеты: до 1024px */
+@media (max-width: 1024px) {
+    .card {
+        width: 100%;
+    }
+}
+
+/* Мобильные устройства: до 768px */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        height: auto;
+    }
+
+    .card .card_inner {
+        padding: 20px;
+        gap: 16px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .card .card_inner img {
+        padding: 16px;
+        width: 60px;
+    }
+
+    .card .card_inner .title {
+        font-size: 18px;
+    }
+
+    .card .card_inner .description {
+        font-size: 14px;
+    }
+}

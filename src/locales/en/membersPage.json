@@ -1,0 +1,13 @@
+{
+    "title": "Community Members",
+    "description1": "Here you will find all the participants who support the open data initiative in Kazakhstan. Join and become part of this movement!",
+    "description2": "Explore member profiles and their contribution to open data development.",
+    "searchPlaceholder": "Search for a member...",
+    "categories": {
+        "all": "All",
+        "frontend": "Developers",
+        "data": "Analysts",
+        "research": "Researchers"
+    },
+    "more": "Learn more"
+}
