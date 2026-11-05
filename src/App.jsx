@@ -8,6 +8,8 @@ import MembersPage from './pages/membersPage/membersPage';
 import NewsDetail from './pages/newsPage/newsDetail/newsDetail';
 import ProjectDetailPage from './pages/projectsPage/projectsDetailPage/projectDetailPage';
 import MembersDetailPage from './pages/membersPage/membersDetailPage/membersDetailPage';
+import ToolsPage from './pages/toolsPage/toolsPage';
+import ToolDetail from './pages/toolsPage/toolDetail/toolDetail';
 import ScrollToTop from './scrollTop/scrollToTop';
 
 function App() {
@@ -24,6 +26,10 @@ function App() {
           <Route path="/newsDetail" element={<NewsDetail />} />
           <Route path="/projectDetail" element={<ProjectDetailPage />} />
           <Route path="/membersDetail" element={<MembersDetailPage />} />
+          <Route path="/tools" element={<ToolsPage />} />
+          <Route path="/tools/open-data" element={<ToolDetail tool="openData" />} />
+          <Route path="/tools/open-budgets" element={<ToolDetail tool="openBudgets" />} />
+          <Route path="/tools/legal-acts" element={<ToolDetail tool="legalActs" />} />
         </Routes>
       </Router>
     </>

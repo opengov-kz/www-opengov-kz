@@ -1,0 +1,56 @@
+{
+    "officialPortal": "Official portal:",
+    "allTools": "All tools",
+    "catalog": {
+        "seoTitle": "Open Government Tools in Kazakhstan — OpenGov.kz",
+        "seoDescription": "Explore Kazakhstan’s open data, budget and draft legal act portals, with practical introductions and links to official resources.",
+        "title": "Open Government Tools in Kazakhstan",
+        "intro": "Kazakhstan has government online resources where people can explore open data, budget information and draft regulatory legal acts. This section brings together three portals to help you get started. The presence of information on a portal does not, by itself, guarantee that it is complete or up to date.",
+        "cards": {
+            "openData": {
+                "title": "Open Data",
+                "description": "You can search for published datasets and review information about their sources and updates. These datasets may be useful for analysis, research and the development of digital services."
+            },
+            "openBudgets": {
+                "title": "Open Budgets",
+                "description": "The portal helps people explore budget requests, programmes, reports and other published information about public finances."
+            },
+            "legalActs": {
+                "title": "Open Legal Acts",
+                "description": "The portal is intended for exploring published draft regulatory legal acts and materials relating to their public discussion."
+            }
+        }
+    },
+    "portals": {
+        "openData": {
+            "seoTitle": "Kazakhstan Open Data Portal — OpenGov.kz",
+            "seoDescription": "Learn how to find datasets on data.egov.kz, check their sources and update dates, and explore resources for developers.",
+            "title": "Open Data Portal",
+            "intro": "The Open Data portal is a government resource in Kazakhstan for publishing datasets. It may be useful to citizens, researchers, journalists and developers.",
+            "actionsTitle": "What can you do?",
+            "actionsText": "Find datasets by topic or organisation, read their descriptions and use available materials for analysis. The portal also has a section for developers; an access key is used to request datasets through the API.",
+            "startTitle": "Where should you start?",
+            "startText": "Open the portal, find a dataset of interest and check its source, last update date, format and terms of use. A dataset's presence in the catalogue does not mean its contents are complete or current."
+        },
+        "openBudgets": {
+            "seoTitle": "Kazakhstan Open Budgets Portal — OpenGov.kz",
+            "seoDescription": "Explore budget requests, programmes, revenue, expenditure and budget execution reports on Kazakhstan’s Open Budgets portal.",
+            "title": "Open Budgets Portal",
+            "intro": "The Open Budgets portal is a government resource in Kazakhstan for publishing budget information. This information helps people learn about the planning and execution of public budgets.",
+            "actionsTitle": "What can you find?",
+            "actionsText": "The portal has sections for budget requests, budget programmes, revenue and expenditure, budget execution reports and citizen budgets. The existence of a section does not guarantee that all documents for every period have been published.",
+            "startTitle": "Where should you start?",
+            "startText": "Choose a government body, budget or document of interest. Check the budget period, document type, publication date and available materials. Check whether you can submit a comment in the relevant section of the portal."
+        },
+        "legalActs": {
+            "seoTitle": "Kazakhstan Open Legal Acts Portal — OpenGov.kz",
+            "seoDescription": "Find draft legal acts on legalacts.egov.kz, review consultation deadlines and documents, and learn about submitting comments.",
+            "title": "Open Regulatory Legal Acts Portal",
+            "intro": "The Open Legal Acts portal is intended for exploring published draft regulatory legal acts and materials relating to their public discussion.",
+            "actionsTitle": "What can you do?",
+            "actionsText": "Find a published draft, check its status and consultation period, read the available documents and, when the relevant function is open, submit comments or suggestions.",
+            "startTitle": "Where should you start?",
+            "startText": "Find a draft of interest and check its status, consultation deadline, draft text and attachments. If you want to submit a comment, use the portal's current procedure within the specified period. <strong>A short description does not replace the full text of the draft.</strong>"
+        }
+    }
+}

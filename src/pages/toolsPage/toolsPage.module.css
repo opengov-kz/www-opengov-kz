@@ -1,0 +1,118 @@
+.first_block {
+    padding: 50px 0;
+    border-top: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.first_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 36px;
+}
+
+.description {
+    max-width: 60ch;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #4B5563;
+}
+
+.second_block {
+    padding: 50px 0;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    box-shadow: #e5e5e5 1px 1px 10px;
+    border-radius: 12px;
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: #cbd5e1 1px 1px 14px;
+}
+
+/* Вся карточка кликабельна, но в ней одна ссылка — с названием портала. */
+.card_title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+}
+
+.card_title a {
+    font-weight: 600;
+    font-size: 20px;
+    color: #1A56DB;
+}
+
+.card_title a:hover {
+    text-decoration: underline;
+}
+
+.card_title a:focus-visible {
+    outline: none;
+}
+
+.card_title a:focus-visible::after {
+    outline: 2px solid #1A56DB;
+    outline-offset: 2px;
+}
+
+.card_description {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #4B5563;
+}
+
+/* Планшеты: до 1024px */
+@media (max-width: 1024px) {
+    .first_block_inner,
+    .cards {
+        padding: 0 20px;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+    .description {
+        font-size: 16px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Мобильные устройства: до 768px */
+@media (max-width: 768px) {
+    .first_block_inner {
+        gap: 20px;
+    }
+
+    .title {
+        font-size: 26px;
+    }
+}
