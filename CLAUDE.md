@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-OpenGov.kz — a static marketing/showcase site (QBS Solutions) for Kazakhstan's open-data / open-government initiative. React 19 + Vite 6, React Router 7, i18next, CSS Modules. No backend; all content is local. Deployed to Vercel automatically on push to `main` (demo: https://qbs-solutions.vercel.app/).
+OpenGov.kz — a static marketing/showcase site (QBS Solutions) for Kazakhstan's open-data / open-government initiative. React 19 + Vite 6, React Router 7, i18next, CSS Modules. No backend; all content is local. Deployed to Vercel automatically on push to `main`. Approved MVP demonstration URL: https://www-opengov-kz.vercel.app/ (DEC-OGK-MVP-URL-01, approved 2026-11-05). Deployment status alone does not constitute functional acceptance.
 
 ## Commands
 
@@ -38,6 +38,21 @@ Images live in `public/` and must be referenced from the root (`/pp_Card1.png`),
 ### Mocks
 
 `src/mocks/` contains an MSW setup that is not wired into the app (nothing imports it) and uses the pre-v2 `rest` API, which doesn't exist in the installed msw v2.
+
+## Управление знаниями и Quality Gate (OpenGov.kz)
+
+При создании или существенном изменении объектов знаний в Notion OpenGov.kz применять действующий [Регламент NR-04 v1](https://app.notion.com/p/40d341823d558173b801c534b0b9af23) и [Knowledge Standards](https://app.notion.com/p/410341823d5581c4a51be5d9f7639029):
+
+- **OGK-QG-01 v0.2** — критерии QG-01…07: SSOT, уникальность, прослеживаемость, статусы, актуальность, границы проектов и история изменений.
+- **OGK-STD-08** — Atomic Knowledge Objects: один основной самостоятельный объект знаний на содержательную страницу, с предусмотренными стандартом исключениями.
+- **До изменения:** определить объект и SSOT, выполнить Duplicate Check и необходимый Impact Review, проверить действующую редакцию и разрешение PO.
+- **После изменения:** выполнить read-back, проверить применимые критерии Quality Gate и соответствие фактических изменений разрешённому scope.
+
+Неприменимый критерий отмечать N/A; отсутствие достаточных свидетельств — Not Verified. Не вводить новые базы, свойства, статусы или нормативные правила автоматически.
+
+Notion OpenGov.kz является источником продуктовых знаний и решений; GitHub Issues — техническим backlog и журналом выполнения; OG — независимым каноническим источником предметных знаний, доступным проекту только для чтения без отдельного разрешения.
+
+Этот раздел содержит ссылки на действующие нормы, не создаёт их новых редакций и не заменяет решения Product Owner.
 
 ## Процесс работы с GitHub Issues (Git worktree)
 
