@@ -1,0 +1,145 @@
+.first_block {
+    padding: 50px 0;
+    border-top: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.first_block_inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 36px;
+    color: #1A56DB;
+}
+
+.text {
+    max-width: 60ch;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #4B5563;
+}
+
+.text strong {
+    font-weight: 600;
+    color: #111827;
+}
+
+.second_block {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 50px 0;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.subtitle {
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.portal,
+.back {
+    align-items: center;
+    gap: 8px;
+    color: #1A56DB;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* inline-flex перекрывает display: inline-block из reset.css для a:link */
+a.portal,
+a.back {
+    display: inline-flex;
+}
+
+.portal {
+    padding: 15px 20px;
+    border: 2px solid #1A56DB;
+    border-radius: 8px;
+    transition: 0.5s ease;
+    overflow-wrap: anywhere;
+}
+
+.portal:hover {
+    background-color: #1A56DB;
+    color: #FFF;
+}
+
+.back {
+    min-height: 44px;
+    border-radius: 4px;
+}
+
+.back:hover {
+    text-decoration: underline;
+}
+
+.portal:focus-visible,
+.back:focus-visible {
+    outline: 2px solid #1A56DB;
+    outline-offset: 2px;
+}
+
+.icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Планшеты: до 1024px */
+@media (max-width: 1024px) {
+    .first_block_inner,
+    .second_block {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+    .text {
+        font-size: 16px;
+    }
+
+    .subtitle {
+        font-size: 20px;
+    }
+}
+
+/* Мобильные устройства: до 768px */
+@media (max-width: 768px) {
+    .first_block_inner {
+        gap: 20px;
+    }
+
+    .title {
+        font-size: 26px;
+    }
+}

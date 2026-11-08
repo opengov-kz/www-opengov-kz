@@ -41,6 +41,10 @@ import membersPage_ru from './locales/ru/membersPage.json';
 import membersPage_kz from './locales/kz/membersPage.json';
 import membersPage_en from './locales/en/membersPage.json';
 
+import toolsPage_ru from './locales/ru/toolsPage.json';
+import toolsPage_kz from './locales/kz/toolsPage.json';
+import toolsPage_en from './locales/en/toolsPage.json';
+
 i18n
     .use(initReactI18next)
     .init({
@@ -56,6 +60,7 @@ i18n
                 newsPage: newsPage_ru,
                 projectsPage: projectsPage_ru,
                 membersPage: membersPage_ru,
+                toolsPage: toolsPage_ru,
             },
             kz: {
                 header: header_kz,
@@ -68,6 +73,7 @@ i18n
                 newsPage: newsPage_kz,
                 projectsPage: projectsPage_kz,
                 membersPage: membersPage_kz,
+                toolsPage: toolsPage_kz,
             },
             en: {
                 header: header_en,
@@ -80,11 +86,12 @@ i18n
                 newsPage: newsPage_en,
                 projectsPage: projectsPage_en,
                 membersPage: membersPage_en,
+                toolsPage: toolsPage_en,
             },
         },
         lng: 'ru', // язык по умолчанию
         fallbackLng: 'ru',
-        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage'], // список всех используемых неймспейсов
+        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage', 'toolsPage'], // список всех используемых неймспейсов
         defaultNS: 'header', // по умолчанию будет использоваться header, если не указан явно
         interpolation: {
             escapeValue: false,
