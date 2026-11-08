@@ -10,6 +10,7 @@ import ProjectDetailPage from './pages/projectsPage/projectsDetailPage/projectDe
 import MembersDetailPage from './pages/membersPage/membersDetailPage/membersDetailPage';
 import ToolsPage from './pages/toolsPage/toolsPage';
 import ToolDetail from './pages/toolsPage/toolDetail/toolDetail';
+import NotFoundPage from './pages/notFoundPage/notFoundPage';
 import ScrollToTop from './scrollTop/scrollToTop';
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
           <Route path="/tools/open-data" element={<ToolDetail tool="openData" />} />
           <Route path="/tools/open-budgets" element={<ToolDetail tool="openBudgets" />} />
           <Route path="/tools/legal-acts" element={<ToolDetail tool="legalActs" />} />
+          {/* Новый маршрут нужно добавить и в rewrites vercel.json, иначе прямой URL получит HTTP 404 (npm run check:routes). */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </>

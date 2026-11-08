@@ -6,7 +6,9 @@
   "homepage": "https://Daelijek.github.io/qbsSolutions",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/check-routes.js",
     "build": "vite build",
+    "check:routes": "node scripts/check-routes.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
