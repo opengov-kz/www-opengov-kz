@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/aboutMe", "destination": "/index.html" },
+    { "source": "/news", "destination": "/index.html" },
+    { "source": "/projects", "destination": "/index.html" },
+    { "source": "/members", "destination": "/index.html" },
+    { "source": "/newsDetail", "destination": "/index.html" },
+    { "source": "/projectDetail", "destination": "/index.html" },
+    { "source": "/membersDetail", "destination": "/index.html" },
+    { "source": "/tools", "destination": "/index.html" },
+    { "source": "/tools/open-data", "destination": "/index.html" },
+    { "source": "/tools/open-budgets", "destination": "/index.html" },
+    { "source": "/tools/legal-acts", "destination": "/index.html" }
+  ]
+}

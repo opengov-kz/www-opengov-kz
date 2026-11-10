@@ -20,7 +20,8 @@ There is no test suite.
 
 ## Architecture
 
-- **Routing** — all routes are declared in `src/App.jsx` (`/`, `/aboutMe`, `/news`, `/projects`, `/members`, `/newsDetail`, `/projectDetail`, `/membersDetail`). Each page component renders its own `<Header />` and `<Footer />`; there is no shared layout route.
+- **Routing** — all routes are declared in `src/App.jsx` (`/`, `/aboutMe`, `/news`, `/projects`, `/members`, `/newsDetail`, `/projectDetail`, `/membersDetail`, `/tools`, `/tools/open-data`, `/tools/open-budgets`, `/tools/legal-acts`, plus the client catch-all `*` → `NotFoundPage`). Each page component renders its own `<Header />` and `<Footer />`; there is no shared layout route.
+- **Vercel route allowlist** — `vercel.json` rewrites only the known routes to `/index.html`; any other URL gets the static trilingual `public/404.html` with HTTP 404. Adding or removing a route in `src/App.jsx` requires the same change in `vercel.json`; `npm run check:routes` (also run automatically before `npm run build`) fails if they diverge.
 - **Detail pages are static.** `/newsDetail`, `/projectDetail`, `/membersDetail` take no route params — every list item links to the same detail URL, and the detail content comes from the corresponding locale JSON, not from the data arrays.
 - **Page structure** — `src/pages/<page>/<page>.jsx` with a sibling `<page>.module.css`; page-specific card components live in subfolders next to the page (e.g. `pages/newsPage/newsCard1/`). Header, footer, and `scrollTop/` live directly under `src/`.
 

@@ -41,6 +41,14 @@ import membersPage_ru from './locales/ru/membersPage.json';
 import membersPage_kz from './locales/kz/membersPage.json';
 import membersPage_en from './locales/en/membersPage.json';
 
+import toolsPage_ru from './locales/ru/toolsPage.json';
+import toolsPage_kz from './locales/kz/toolsPage.json';
+import toolsPage_en from './locales/en/toolsPage.json';
+
+import notFoundPage_ru from './locales/ru/notFoundPage.json';
+import notFoundPage_kz from './locales/kz/notFoundPage.json';
+import notFoundPage_en from './locales/en/notFoundPage.json';
+
 i18n
     .use(initReactI18next)
     .init({
@@ -56,6 +64,8 @@ i18n
                 newsPage: newsPage_ru,
                 projectsPage: projectsPage_ru,
                 membersPage: membersPage_ru,
+                toolsPage: toolsPage_ru,
+                notFoundPage: notFoundPage_ru,
             },
             kz: {
                 header: header_kz,
@@ -68,6 +78,8 @@ i18n
                 newsPage: newsPage_kz,
                 projectsPage: projectsPage_kz,
                 membersPage: membersPage_kz,
+                toolsPage: toolsPage_kz,
+                notFoundPage: notFoundPage_kz,
             },
             en: {
                 header: header_en,
@@ -80,11 +92,13 @@ i18n
                 newsPage: newsPage_en,
                 projectsPage: projectsPage_en,
                 membersPage: membersPage_en,
+                toolsPage: toolsPage_en,
+                notFoundPage: notFoundPage_en,
             },
         },
         lng: 'ru', // язык по умолчанию
         fallbackLng: 'ru',
-        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage'], // список всех используемых неймспейсов
+        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage', 'toolsPage', 'notFoundPage'], // список всех используемых неймспейсов
         defaultNS: 'header', // по умолчанию будет использоваться header, если не указан явно
         interpolation: {
             escapeValue: false,
