@@ -25,3 +25,7 @@ dist-ssr
 
 # Git worktrees for GitHub Issues (see CLAUDE.md)
 .worktrees/
+
+# Local Playwright artifacts (Issue #17): never commit screenshots, traces or reports
+/test-results/
+/playwright-report/
