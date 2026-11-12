@@ -1,22 +1,52 @@
 /* global process */
+import { existsSync, mkdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@playwright/test';
 
-// Local-only Chromium E2E (Issue #17). Each run writes to its own folder so a new run
-// does not wipe the failure artifacts of a previous one: set PW_RUN_ID per run.
-const runId = process.env.PW_RUN_ID || 'latest';
+// Local-only Chromium E2E (Issue #17). Evidence guard (F-17-02, Q-OGK-TEST-30=A): Playwright
+// deletes outputDir and overwrites the JSON report at start, so every run gets its own never
+// reused folder. The default ID is unique per invocation and is exported to process.env so
+// worker processes, which reload this file, resolve the same folder.
+process.env.PW_RUN_ID ||= `run-${new Date().toISOString().replace(/[:.]/g, '-')}-p${process.pid}`;
+const runId = process.env.PW_RUN_ID;
+const root = fileURLToPath(new URL('./', import.meta.url));
+const outputDir = `${root}test-results/${runId}`;
+const reportFile = `${root}playwright-report/${runId}.json`;
+
+// The check runs once, in the process that first loads the config; that process and its
+// workers (children) carry the guard token and skip it. Nothing is ever deleted here.
+const guardToken = `${runId}:${process.pid}`;
+if (![guardToken, `${runId}:${process.ppid}`].includes(process.env.PW_RUN_GUARD)) {
+  const stop = (why) => { throw new Error(`[evidence guard] ${why}. Nothing was deleted or overwritten.`); };
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(runId)) stop(`PW_RUN_ID "${runId}" must be a plain folder name`);
+  if (process.argv.some((a) => a === '--output' || a.startsWith('--output='))) stop('--output bypasses the per-run folder, use PW_RUN_ID');
+  for (const name of ['PLAYWRIGHT_JSON_OUTPUT_FILE', 'PLAYWRIGHT_JSON_OUTPUT_NAME', 'PLAYWRIGHT_JSON_OUTPUT_DIR']) {
+    if (process.env[name]) stop(`${name} overrides the per-run JSON report`);
+  }
+  if (existsSync(reportFile)) stop(`report playwright-report/${runId}.json already exists`);
+  mkdirSync(`${root}test-results`, { recursive: true });
+  try {
+    mkdirSync(outputDir); // atomic reservation: a concurrent run with the same ID gets EEXIST
+  } catch (e) {
+    if (e.code === 'EEXIST') stop(`output folder test-results/${runId} already exists`);
+    throw e;
+  }
+  process.env.PW_RUN_GUARD = guardToken;
+}
+
 const negativeControl = process.env.PW_NEGATIVE_CONTROL === '1';
 const port = 4173;
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  outputDir: `test-results/${runId}`,
+  outputDir,
   fullyParallel: true,
   forbidOnly: true,
   retries: 0,
   // PW-11 negative control runs only on demand, never as part of Smoke/Regression.
   grep: negativeControl ? /@negative/ : undefined,
   grepInvert: negativeControl ? undefined : /@negative/,
-  reporter: [['list'], ['json', { outputFile: `playwright-report/${runId}.json` }]],
+  reporter: [['list'], ['json', { outputFile: reportFile }]],
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     screenshot: 'only-on-failure',

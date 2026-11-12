@@ -14,6 +14,34 @@ const TOOL_PORTALS = {
 };
 const isMobile = (testInfo) => testInfo.project.name.startsWith('mobile');
 
+// Per rendered <a>: full visible label, raw href, page region, a selector unique on the page and,
+// for React Router links (data-discover), whether the source <Link> received `to`. The `to` prop
+// is read from the parent React fiber (ForwardRef, tag 11): React internals, test-only, no app change.
+const auditLinks = (page) => page.locator('a').evaluateAll((as) => as.map((a) => {
+  const img = a.querySelector('img[src]');
+  const region = a.closest('header') ? 'header' : a.closest('footer') ? 'footer' : a.closest('main') ? 'main' : 'body';
+  const href = a.getAttribute('href');
+  const base = `${region} ${href === null ? 'a:not([href])' : `a[href="${href.replace(/"/g, '\\"')}"]`}`
+    + (img ? `:has(img[src="${img.getAttribute('src')}"])` : '');
+  const same = [...document.querySelectorAll(base)];
+  let to = 'n/a';
+  if (a.hasAttribute('data-discover')) {
+    const key = Object.keys(a).find((k) => k.startsWith('__reactFiber$'));
+    const owner = key ? a[key].return : null;
+    to = owner?.tag === 11 && owner.memoizedProps
+      ? (owner.memoizedProps.to == null || owner.memoizedProps.to === '' ? 'missing' : 'set')
+      : 'unreadable';
+  }
+  return {
+    href,
+    region,
+    to,
+    selector: same.length > 1 ? `${base} >> nth=${same.indexOf(a)}` : base,
+    label: (a.innerText || a.getAttribute('aria-label') || img?.getAttribute('alt') || img?.getAttribute('src') || '')
+      .replace(/\s+/g, ' ').trim(),
+  };
+}));
+
 test.describe('@regression', () => {
   test('PW-02 target delta: header links to approved /tools catalog', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
@@ -92,23 +120,36 @@ test.describe('@regression', () => {
     }
   }
 
+  // PW-08 link audit (Q-OGK-TEST-13=A, Q-OGK-TEST-30=A). Confirmed missing destinations fail:
+  // missing/empty href, unknown internal route, React Router <Link> rendered without `to` (it
+  // falls back to the current URL, so in the DOM it looks like a self-link). A link that merely
+  // points to the current page is a candidate for BA review, not a failure: no such product rule.
   for (const route of ROUTES) {
-    test(`PW-08 rendered links have usable destinations ${route}`, async ({ page }) => {
+    test(`PW-08 rendered links have usable destinations ${route}`, async ({ page }, testInfo) => {
       await page.goto(route, { waitUntil: 'load' });
-      const links = await page.locator('a').evaluateAll((as) => as.map((a) => ({
-        href: a.getAttribute('href'),
-        text: (a.textContent || a.querySelector('img')?.getAttribute('src') || '').trim().slice(0, 40),
-        inChrome: !!a.closest('header, footer'),
-      })));
-      const broken = links.filter((l) => !l.href).map((l) => `empty href: "${l.text}"`);
-      for (const l of links.filter((x) => x.href?.startsWith('/'))) {
-        const path = new URL(l.href, 'http://x').pathname;
-        if (!ROUTES.includes(path)) broken.push(`unknown internal route ${l.href}: "${l.text}"`);
-        else if (!l.inChrome && path === route) broken.push(`content link points to current page ${l.href}: "${l.text}"`);
+      const confirmed = [];
+      const unclassified = [];
+      const candidates = [];
+      const external = new Set();
+      for (const locale of LOCALES) {
+        await setLocale(page, locale);
+        for (const l of await auditLinks(page)) {
+          const where = `route=${route} | locale=${locale.key} | viewport=${testInfo.project.name} | `
+            + `selector=${l.selector} | label="${l.label}" | href=${JSON.stringify(l.href)}`;
+          const path = l.href?.startsWith('/') ? new URL(l.href, 'http://x').pathname : null;
+          if (l.href === null) confirmed.push(`missing href | ${where}`);
+          else if (l.href === '') confirmed.push(`empty href | ${where}`);
+          else if (l.to === 'missing') confirmed.push(`router Link without "to" (renders current URL) | ${where}`);
+          else if (path && !ROUTES.includes(path)) confirmed.push(`unknown internal route | ${where}`);
+          else if (path === route && l.region !== 'header' && l.region !== 'footer') {
+            (l.to === 'unreadable' ? unclassified : candidates).push(`candidate self-link | ${where}`);
+          } else if (/^https?:/.test(l.href)) external.add(l.href);
+        }
       }
-      const external = links.filter((l) => /^https?:/.test(l.href ?? '')).map((l) => l.href);
-      if (external.length) note('external-links (href only, not visited)', [...new Set(external)].join(', '));
-      expect(broken, 'links without a usable destination (Q-OGK-TEST-13=A)').toEqual([]);
+      for (const c of candidates) note('candidate self-link (BA disposition, not a failure)', c);
+      if (external.size) note('external-links (href only, not visited)', [...external].join(', '));
+      expect.soft(unclassified, 'self-link whose source <Link> props could not be read (test limitation)').toEqual([]);
+      expect(confirmed, 'links without a usable destination (Q-OGK-TEST-13=A)').toEqual([]);
     });
   }
 
