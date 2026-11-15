@@ -131,11 +131,13 @@ test.describe('@regression', () => {
       const unclassified = [];
       const candidates = [];
       const external = new Set();
+      const headerMarkers = new Set();
       for (const locale of LOCALES) {
         await setLocale(page, locale);
         for (const l of await auditLinks(page)) {
           const where = `route=${route} | locale=${locale.key} | viewport=${testInfo.project.name} | `
             + `selector=${l.selector} | label="${l.label}" | href=${JSON.stringify(l.href)}`;
+          if (l.region === 'header' && l.href?.startsWith('/')) headerMarkers.add(l.to);
           const path = l.href?.startsWith('/') ? new URL(l.href, 'http://x').pathname : null;
           if (l.href === null) confirmed.push(`missing href | ${where}`);
           else if (l.href === '') confirmed.push(`empty href | ${where}`);
@@ -148,6 +150,9 @@ test.describe('@regression', () => {
       }
       for (const c of candidates) note('candidate self-link (BA disposition, not a failure)', c);
       if (external.size) note('external-links (href only, not visited)', [...external].join(', '));
+      // Sentinel (F-MR-02): header NavLinks always pass `to`. Anything but 'set' means the React
+      // Router marker or fiber props this audit relies on are gone, so `to` checks would be silent.
+      expect.soft([...headerMarkers], 'header router-link markers unreadable (test limitation)').toEqual(['set']);
       expect.soft(unclassified, 'self-link whose source <Link> props could not be read (test limitation)').toEqual([]);
       expect(confirmed, 'links without a usable destination (Q-OGK-TEST-13=A)').toEqual([]);
     });

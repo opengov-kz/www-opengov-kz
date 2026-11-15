@@ -20,7 +20,9 @@ if (![guardToken, `${runId}:${process.ppid}`].includes(process.env.PW_RUN_GUARD)
   const stop = (why) => { throw new Error(`[evidence guard] ${why}. Nothing was deleted or overwritten.`); };
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(runId)) stop(`PW_RUN_ID "${runId}" must be a plain folder name`);
   if (process.argv.some((a) => a === '--output' || a.startsWith('--output='))) stop('--output bypasses the per-run folder, use PW_RUN_ID');
-  for (const name of ['PLAYWRIGHT_JSON_OUTPUT_FILE', 'PLAYWRIGHT_JSON_OUTPUT_NAME', 'PLAYWRIGHT_JSON_OUTPUT_DIR']) {
+  // F-MR-01: a CLI reporter replaces the JSON reporter, and the HTML reporter clears playwright-report/.
+  if (process.argv.some((a) => a === '--reporter' || a.startsWith('--reporter='))) stop('--reporter replaces the per-run JSON report');
+  for (const name of ['PLAYWRIGHT_JSON_OUTPUT_FILE', 'PLAYWRIGHT_JSON_OUTPUT_NAME', 'PLAYWRIGHT_JSON_OUTPUT_DIR', 'PW_TEST_REPORTER']) {
     if (process.env[name]) stop(`${name} overrides the per-run JSON report`);
   }
   if (existsSync(reportFile)) stop(`report playwright-report/${runId}.json already exists`);
