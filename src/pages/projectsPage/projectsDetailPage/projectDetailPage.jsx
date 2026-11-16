@@ -84,9 +84,7 @@ function ProjectDetailPage() {
                             description={t('projectDetail.similarProjects.2.description')}
                             imgSrc="/projectDetailPage_10.png" />
                     </div>
-                    <Link to="/projects">
-                        <button className={styles.button}>{t('projectDetail.backToProjects')}</button>
-                    </Link>
+                    <Link to="/projects" className={styles.button}>{t('projectDetail.backToProjects')}</Link>
                 </div>
             </div>
             <Footer />

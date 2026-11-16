@@ -18,7 +18,7 @@ function MainPage() {
                     <div className={styles.group}>
                         <div className={styles.title}>{t('mainPage.title1')}</div>
                         <div className={styles.description}>{t('mainPage.description1')}</div>
-                        <Link to="/aboutMe"><button className={styles.more_button}>{t('mainPage.learnMore')}</button></Link>
+                        <Link to="/aboutMe" className={styles.more_button}>{t('mainPage.learnMore')}</Link>
                     </div>
                     <img src="/mainPage_1.png" alt="" />
                 </div>

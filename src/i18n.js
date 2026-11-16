@@ -49,6 +49,11 @@ import notFoundPage_ru from './locales/ru/notFoundPage.json';
 import notFoundPage_kz from './locales/kz/notFoundPage.json';
 import notFoundPage_en from './locales/en/notFoundPage.json';
 
+// FR-SUI-01/02: <html lang> следует за i18next; внутренний ключ казахского kz, в HTML стандартный код kk.
+i18n.on('languageChanged', (lng) => {
+    document.documentElement.lang = lng === 'kz' ? 'kk' : lng;
+});
+
 i18n
     .use(initReactI18next)
     .init({

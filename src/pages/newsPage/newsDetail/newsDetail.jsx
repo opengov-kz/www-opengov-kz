@@ -74,9 +74,7 @@ function NewsDetail() {
                                 date="14.02.2024"
                                 imgSrc="/newsDetailCard_1.png" />
                         </div>
-                        <Link to="/news">
-                            <button className={styles.button}>{t('newsDetail.backToNews')}</button>
-                        </Link>
+                        <Link to="/news" className={styles.button}>{t('newsDetail.backToNews')}</Link>
                     </div>
                 </div>
             </div>
