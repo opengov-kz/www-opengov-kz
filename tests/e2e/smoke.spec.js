@@ -13,7 +13,8 @@ test.describe('@smoke', () => {
     await expectRendered(page);
     // Locators taken from src/pages/mainPage/mainPage.jsx: hero image and hero CTA.
     await expect(page.locator('img[src="/mainPage_1.png"]')).toBeVisible();
-    await expect(page.locator('a[href="/aboutMe"] button')).toBeVisible();
+    // Hero CTA is the link itself since #19 (AC-SUI-04: no button nested in a link).
+    await expect(page.locator('a[href="/aboutMe"]:not(header a):not(footer a)')).toBeVisible();
     expect(errors.pageErrors, 'uncaught JS exceptions').toEqual([]);
   });
 

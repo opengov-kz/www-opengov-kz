@@ -91,11 +91,11 @@
     cursor: pointer;
   }
   
-  input:focus,
-  input:active,
-  button:focus,
-  button:active {
-    outline: none;
+  /* FR-SUI-03: видимый фокус клавиатуры; белое кольцо отделяет контур от синих фонов. */
+  :focus-visible {
+    outline: 2px solid #1A56DB;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #fff;
   }
   
   button::-moz-focus-inner {

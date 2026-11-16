@@ -102,7 +102,6 @@
 }
 
 .third_block .pageButton:focus {
-    outline: none;
     background-color: #1A56DB;
     color: #ffffff;
 }

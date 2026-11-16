@@ -9,10 +9,11 @@ function Header() {
   const currentLang = i18n.language;
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setIsOpen(false);
+    closeMenu();
   };
 
   return (
@@ -21,18 +22,25 @@ function Header() {
         <div className={styles.logo}>OpenGov.kz</div>
       </div>
 
-      <button className={styles.burger} onClick={toggleMenu}>
-        <span className={styles.burger_line}></span>
-        <span className={styles.burger_line}></span>
-        <span className={styles.burger_line}></span>
+      <button
+        type="button"
+        className={styles.burger}
+        onClick={toggleMenu}
+        aria-label={t('menu')}
+        aria-expanded={isOpen}
+        aria-controls="site-nav"
+      >
+        <span className={styles.burger_line} aria-hidden="true"></span>
+        <span className={styles.burger_line} aria-hidden="true"></span>
+        <span className={styles.burger_line} aria-hidden="true"></span>
       </button>
 
-      <nav className={`${styles.nav} ${isOpen ? styles.show : ''}`}>
+      <nav id="site-nav" className={`${styles.nav} ${isOpen ? styles.show : ''}`}>
         <ul className={styles.nav_list}>
           <li className={styles.nav_item}>
             <NavLink
               to="/"
-              onClick={toggleMenu}
+              onClick={closeMenu}
               className={({ isActive }) => isActive ? styles.active : ''}
             >
               {t('home')}
@@ -41,7 +49,7 @@ function Header() {
           <li className={styles.nav_item}>
             <NavLink
               to="/aboutMe"
-              onClick={toggleMenu}
+              onClick={closeMenu}
               className={({ isActive }) => isActive ? styles.active : ''}
             >
               {t('about')}
@@ -50,7 +58,7 @@ function Header() {
           <li className={styles.nav_item}>
             <NavLink
               to="/news"
-              onClick={toggleMenu}
+              onClick={closeMenu}
               className={({ isActive }) => isActive ? styles.active : ''}
             >
               {t('news')}
@@ -59,7 +67,7 @@ function Header() {
           <li className={styles.nav_item}>
             <NavLink
               to="/members"
-              onClick={toggleMenu}
+              onClick={closeMenu}
               className={({ isActive }) => isActive ? styles.active : ''}
             >
               {t('members')}
@@ -68,7 +76,7 @@ function Header() {
           <li className={styles.nav_item}>
             <NavLink
               to="/projects"
-              onClick={toggleMenu}
+              onClick={closeMenu}
               className={({ isActive }) => isActive ? styles.active : ''}
             >
               {t('projects')}

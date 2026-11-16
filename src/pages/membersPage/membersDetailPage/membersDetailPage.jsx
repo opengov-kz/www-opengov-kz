@@ -55,9 +55,7 @@ function MembersDetailPage() {
                             title={t('projects.list.3.title')}
                             description={t('projects.list.3.description')} />
                     </div>
-                    <Link to="/members">
-                        <button className={styles.button}>{t('projects.backButton')}</button>
-                    </Link>
+                    <Link to="/members" className={styles.button}>{t('projects.backButton')}</Link>
                 </div>
             </div>
             <Footer />

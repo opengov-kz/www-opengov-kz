@@ -169,7 +169,7 @@ test.describe('@regression', () => {
 
   test('PW-08 homepage hero CTA navigates to /aboutMe (baseline)', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
-    await page.locator('a[href="/aboutMe"] button').click();
+    await page.locator('a[href="/aboutMe"]:not(header a):not(footer a)').click(); // hero CTA link (#19, AC-SUI-04)
     await expect(page).toHaveURL('/aboutMe');
     await expectRendered(page);
   });
