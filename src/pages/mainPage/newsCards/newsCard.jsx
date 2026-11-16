@@ -10,7 +10,7 @@ function NewsCard(props) {
             <img src={props.imgSrc} alt="" />
             <div className={styles.group}>
                 <div className={styles.date}>
-                    <img src="/public/mp_Card8.svg" alt="" />
+                    <img src="/mp_Card8.svg" alt="" />
                     {props.date}
                 </div>
                 <div className={styles.title}>{props.title}</div>
