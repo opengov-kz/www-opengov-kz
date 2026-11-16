@@ -13,11 +13,11 @@ function NewsCard1(props) {
                 <div className={styles.description}>{props.description}</div>
                 <div className={styles.secondGroup}>
                     <div className={styles.date}>
-                        <img src="/public/mp_Card8.svg" alt="" />
+                        <img src="/mp_Card8.svg" alt="" />
                         {props.date}
                     </div>
                     <div className={styles.author}>
-                        <img src="/public/np_Card7.svg" alt="" />
+                        <img src="/np_Card7.svg" alt="" />
                         {props.author}
                     </div>
                 </div>
