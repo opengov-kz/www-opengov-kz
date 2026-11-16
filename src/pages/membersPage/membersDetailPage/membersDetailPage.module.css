@@ -104,3 +104,10 @@
     background-color: #1A56DB;
     color: #FFF;
 }
+
+@media (max-width: 768px) {
+    .first_block_inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
