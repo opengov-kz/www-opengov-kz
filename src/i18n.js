@@ -49,6 +49,16 @@ import notFoundPage_ru from './locales/ru/notFoundPage.json';
 import notFoundPage_kz from './locales/kz/notFoundPage.json';
 import notFoundPage_en from './locales/en/notFoundPage.json';
 
+import openGovernmentPage_ru from './locales/ru/openGovernmentPage.json';
+import openGovernmentPage_kz from './locales/kz/openGovernmentPage.json';
+import openGovernmentPage_en from './locales/en/openGovernmentPage.json';
+import communityPage_ru from './locales/ru/communityPage.json';
+import communityPage_kz from './locales/kz/communityPage.json';
+import communityPage_en from './locales/en/communityPage.json';
+import aboutProjectPage_ru from './locales/ru/aboutProjectPage.json';
+import aboutProjectPage_kz from './locales/kz/aboutProjectPage.json';
+import aboutProjectPage_en from './locales/en/aboutProjectPage.json';
+
 // FR-SUI-01/02: <html lang> следует за i18next; внутренний ключ казахского kz, в HTML стандартный код kk.
 i18n.on('languageChanged', (lng) => {
     document.documentElement.lang = lng === 'kz' ? 'kk' : lng;
@@ -71,6 +81,9 @@ i18n
                 membersPage: membersPage_ru,
                 toolsPage: toolsPage_ru,
                 notFoundPage: notFoundPage_ru,
+                openGovernmentPage: openGovernmentPage_ru,
+                communityPage: communityPage_ru,
+                aboutProjectPage: aboutProjectPage_ru,
             },
             kz: {
                 header: header_kz,
@@ -85,6 +98,9 @@ i18n
                 membersPage: membersPage_kz,
                 toolsPage: toolsPage_kz,
                 notFoundPage: notFoundPage_kz,
+                openGovernmentPage: openGovernmentPage_kz,
+                communityPage: communityPage_kz,
+                aboutProjectPage: aboutProjectPage_kz,
             },
             en: {
                 header: header_en,
@@ -99,11 +115,14 @@ i18n
                 membersPage: membersPage_en,
                 toolsPage: toolsPage_en,
                 notFoundPage: notFoundPage_en,
+                openGovernmentPage: openGovernmentPage_en,
+                communityPage: communityPage_en,
+                aboutProjectPage: aboutProjectPage_en,
             },
         },
         lng: 'ru', // язык по умолчанию
         fallbackLng: 'ru',
-        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage', 'toolsPage', 'notFoundPage'], // список всех используемых неймспейсов
+        ns: ['header', 'mainPage', 'footer', 'aboutPage', 'newsDetail', 'projectDetailPage', 'membersDetailPage', 'newsPage', 'projectsPage', 'membersPage', 'toolsPage', 'notFoundPage', 'openGovernmentPage', 'communityPage', 'aboutProjectPage'], // список всех используемых неймспейсов
         defaultNS: 'header', // по умолчанию будет использоваться header, если не указан явно
         interpolation: {
             escapeValue: false,

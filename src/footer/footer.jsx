@@ -1,71 +1,31 @@
 import { useTranslation } from 'react-i18next';
-import styles from './footer.module.css';
 import { Link } from 'react-router-dom';
+import styles from './footer.module.css';
+
+// v1.2 footer: only working internal links and the approved independence disclaimer; no subscription form or unverified contacts.
+const LINKS = [
+  { to: '/', key: 'home' },
+  { to: '/open-government', key: 'openGovernment' },
+  { to: '/tools', key: 'tools' },
+  { to: '/community', key: 'community' },
+  { to: '/about', key: 'aboutProject' },
+];
 
 function Footer() {
-  const { t } = useTranslation('footer');
+  const { t } = useTranslation(['footer', 'header']);
 
   return (
-    <footer>
-      <div className={styles.footer_inner}>
-        <div className={styles.upper_footer}>
-          <div className={styles.first_col}>
-            <div className={styles.title}>
-              {t('footer.openGovTitle')}
-            </div>
-            <div className={styles.description}>
-              {t('footer.openGovDescription')}
-            </div>
-            <div className={styles.soc_media}>
-              <img src="/twitter.svg" alt="twitter" />
-              <img src="/facebook.svg" alt="facebook" />
-              <img src="/linkedIn.svg" alt="linkedIn" />
-              <img src="/youtube.svg" alt="youtube" />
-            </div>
-          </div>
-
-          <div className={styles.second_col}>
-            <div className={styles.title}>
-              {t('footer.navigation')}
-            </div>
-            <nav>
-              <ul className={styles.nav_list}>
-                <li className={styles.nav_item}><Link to="/">{t('footer.home')}</Link></li>
-                <li className={styles.nav_item}><Link to="/aboutMe">{t('footer.aboutUs')}</Link></li>
-                <li className={styles.nav_item}><Link to="/news">{t('footer.news')}</Link></li>
-                <li className={styles.nav_item}><Link to="/members">{t('footer.communityMembers')}</Link></li>
-                <li className={styles.nav_item}><Link to="/projects">{t('footer.projects')}</Link></li>
-              </ul>
-            </nav>
-          </div>
-
-          <div className={styles.third_col}>
-            <div className={styles.title}>
-              {t('footer.resources')}
-            </div>
-            <nav>
-              <ul className={styles.nav_list}>
-                <li className={styles.nav_item}><a href="">{t('footer.openData')}</a></li>
-                <li className={styles.nav_item}><a href="">{t('footer.documentation')}</a></li>
-                <li className={styles.nav_item}><a href="">{t('footer.api')}</a></li>
-                <li className={styles.nav_item}><a href="">{t('footer.tools')}</a></li>
-              </ul>
-            </nav>
-          </div>
-
-          <div className={styles.fourth_col}>
-            <div className={styles.title}>
-              {t('footer.subscribe')}
-            </div>
-            <div className={styles.user_ineraction}>
-              <input type="text" placeholder={t('footer.emailPlaceholder')} />
-              <button><img src="/mail.svg" alt="" /></button>
-            </div>
-          </div>
+    <footer className={styles.footer}>
+      <div className={styles.wrap}>
+        <div>
+          <strong className={styles.brand}>OpenGov.kz</strong>
+          <p className={styles.disclaimer}>{t('disclaimer')}</p>
         </div>
-        <div className={styles.lower_footer}>
-          <div className={styles.rights}>{t('footer.rights')}</div>
-        </div>
+        <ul className={styles.links}>
+          {LINKS.map(({ to, key }) => (
+            <li key={to}><Link to={to}>{t(key, { ns: 'header' })}</Link></li>
+          ))}
+        </ul>
       </div>
     </footer>
   );

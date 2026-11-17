@@ -1,178 +1,59 @@
-footer {
-    background-color: #111827;
+.footer {
+    background: var(--og-navy);
     color: #fff;
-    padding: 30px 0;
+    padding: 34px 0;
+    font: 16px/1.6 var(--og-font);
 }
 
-.footer_inner {
-    margin: 60px 0;
-}
-
-.title {
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.upper_footer {
-    max-width: 1200px;
-    height: 180px;
+.wrap {
+    max-width: 1160px;
     margin: auto;
+    padding: 0 24px;
     display: flex;
-    align-items: start;
     justify-content: space-between;
-}
-
-.nav_list .nav_item a {
-    color: #9CA3AF;
-    transition: 0.5s ease;
-}
-
-.nav_list .nav_item a:hover {
-    color: #1A56DB;
-}
-
-.first_col {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.second_col {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    gap: 20px;
-    /* или можно flex-grow: 1, если хочешь */
-}
-
-.second_col nav {
-    flex-grow: 1;
-    /* Чтобы nav занимал всё оставшееся место */
-    display: flex;
-}
-
-.nav_list {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav_item {
-    text-align: left;
-}
-
-.third_col {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     gap: 20px;
 }
 
-.third_col nav {
-    flex-grow: 1;
+.brand {
+    font-weight: 700;
+}
+
+.disclaimer {
+    max-width: 52ch;
+}
+
+.links {
     display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
 }
 
-.soc_media {
-    display: flex;
-    gap: 16px;
+/* Separator after each item, so a wrapped line never starts with a dot. */
+.links li:not(:last-child)::after {
+    content: '·';
+    content: '·' / '';
+    margin: 0 6px;
 }
 
-.description {
-    color: #9CA3AF;
+.links a {
+    color: #fff;
+    padding: 4px 2px;
 }
 
-
-.fourth_col {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+/* CM-02 (v1.1): focus ring must contrast with the navy footer. */
+.links a:focus-visible {
+    outline: 3px solid #f5b74e;
+    outline-offset: 2px;
+    box-shadow: none;
 }
 
-.user_ineraction input {
-    background-color: #1F2937;
-    padding: 10px;
-    border-radius: 8px;
-    margin-right: 10px;
-}
-
-.user_ineraction button {
-    background-color: #1A56DB;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.lower_footer {
-    max-width: 1200px;
-    margin: auto;
-    text-align: center;
-    color: #9CA3AF;
-    padding-top: 35px;
-    margin-top: 35px;
-    border-top: 1px solid #1F2937;
-    align-items: center;
-}
-
-/* Планшеты: ширина до 1024px */
-@media (max-width: 1024px) {
-    .upper_footer {
-        flex-wrap: wrap;
-        height: auto;
-        gap: 40px;
-        padding: 0 20px;
+@media (max-width: 560px) {
+    .wrap {
+        display: block;
+        padding: 0 16px;
     }
 
-    .first_col,
-    .second_col,
-    .third_col,
-    .fourth_col {
-        flex: 1 1 45%;
-    }
-
-    .fourth_col {
-        align-items: flex-start;
-    }
-}
-
-/* Мобильные устройства: ширина до 768px */
-@media (max-width: 768px) {
-    .upper_footer {
-        flex-direction: column;
-        align-items: flex-start;
-        height: auto;
-        padding: 0 20px;
-        gap: 30px;
-    }
-
-    .first_col,
-    .second_col,
-    .third_col,
-    .fourth_col {
-        width: 100%;
-    }
-
-    .user_ineraction {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .user_ineraction input {
-        width: 100%;
-        margin-right: 0;
-    }
-
-    .user_ineraction button {
-        width: 100%;
-    }
-
-    .lower_footer {
-        padding: 0 20px;
+    .links {
+        margin-top: 12px;
     }
 }

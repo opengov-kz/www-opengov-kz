@@ -1,8 +1,10 @@
 {
     "home": "Home",
-    "about": "About Us",
-    "news": "News",
-    "members": "Community Members",
-    "menu": "Menu",
-    "projects": "Projects"
+    "openGovernment": "Open government",
+    "tools": "Tools",
+    "community": "Community",
+    "aboutProject": "About the project",
+    "navLabel": "Main navigation",
+    "breadcrumbLabel": "Breadcrumb",
+    "externalSite": "(external site)"
 }

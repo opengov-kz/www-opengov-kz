@@ -1,0 +1,30 @@
+.crumbs {
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+.crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 8px;
+}
+
+.crumbs li {
+    list-style: none;
+}
+
+.crumbs li + li::before {
+    content: '›';
+    content: '›' / '';
+    margin-right: 8px;
+    color: #50667a;
+}
+
+.crumbs a {
+    padding: 2px 0;
+    text-decoration: underline;
+}
+
+.crumbs [aria-current] {
+    color: #50667a;
+}

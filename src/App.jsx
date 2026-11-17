@@ -8,6 +8,9 @@ import MembersPage from './pages/membersPage/membersPage';
 import NewsDetail from './pages/newsPage/newsDetail/newsDetail';
 import ProjectDetailPage from './pages/projectsPage/projectsDetailPage/projectDetailPage';
 import MembersDetailPage from './pages/membersPage/membersDetailPage/membersDetailPage';
+import OpenGovernmentPage from './pages/openGovernmentPage/openGovernmentPage';
+import CommunityPage from './pages/communityPage/communityPage';
+import AboutProjectPage from './pages/aboutProjectPage/aboutProjectPage';
 import ToolsPage from './pages/toolsPage/toolsPage';
 import ToolDetail from './pages/toolsPage/toolDetail/toolDetail';
 import NotFoundPage from './pages/notFoundPage/notFoundPage';
@@ -27,6 +30,9 @@ function App() {
           <Route path="/newsDetail" element={<NewsDetail />} />
           <Route path="/projectDetail" element={<ProjectDetailPage />} />
           <Route path="/membersDetail" element={<MembersDetailPage />} />
+          <Route path="/open-government" element={<OpenGovernmentPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/about" element={<AboutProjectPage />} />
           <Route path="/tools" element={<ToolsPage />} />
           <Route path="/tools/open-data" element={<ToolDetail tool="openData" />} />
           <Route path="/tools/open-budgets" element={<ToolDetail tool="openBudgets" />} />

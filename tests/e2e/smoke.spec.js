@@ -2,8 +2,8 @@
 // /projects (reachability only) and one unknown path, both viewports, RU/KZ/EN where applicable.
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, P0_ROUTES, UNKNOWN_ROUTE, expectRendered, headerText, htmlLang, note,
-  notFoundText, openMobileMenuIfNeeded, overflow, setLocale, watchErrors,
+  HEADER_LINKS, LOCALES, P0_ROUTES, UNKNOWN_ROUTE, expectRendered, headerText, htmlLang, mainPageText, note,
+  notFoundText, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 test.describe('@smoke', () => {
@@ -11,17 +11,15 @@ test.describe('@smoke', () => {
     const errors = watchErrors(page, baseURL);
     await page.goto('/', { waitUntil: 'load' });
     await expectRendered(page);
-    // Locators taken from src/pages/mainPage/mainPage.jsx: hero image and hero CTA.
-    await expect(page.locator('img[src="/mainPage_1.png"]')).toBeVisible();
-    // Hero CTA is the link itself since #19 (AC-SUI-04: no button nested in a link).
-    await expect(page.locator('a[href="/aboutMe"]:not(header a):not(footer a)')).toBeVisible();
+    // v1.2 home (#26): H1 and the primary hero CTA to /open-government.
+    await expect(page.locator('main h1')).toHaveText(mainPageText('ru').hero.title);
+    await expect(page.locator('main a[href="/open-government"]').first()).toBeVisible();
     expect(errors.pageErrors, 'uncaught JS exceptions').toEqual([]);
   });
 
   for (const href of HEADER_LINKS) {
     test(`PW-02 baseline: header link ${href} navigates (current implementation)`, async ({ page }) => {
-      await page.goto(href === '/' ? '/news' : '/', { waitUntil: 'load' });
-      await openMobileMenuIfNeeded(page);
+      await page.goto('/', { waitUntil: 'load' });
       await page.locator(`header nav a[href="${href}"]`).click();
       await expect(page).toHaveURL(href);
       await expectRendered(page);
@@ -68,7 +66,7 @@ test.describe('@smoke', () => {
       await home.click();
       await expect(page).toHaveURL('/');
       await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(0);
-      await expect(page).toHaveTitle('OpenGov.kz');
+      await expect(page).toHaveTitle(mainPageText(locale.key).seoTitle);
     });
   }
 
@@ -104,10 +102,9 @@ test.describe('@smoke', () => {
 
   test('PW-03 header language buttons RU/KZ/EN exist, default is RU', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
-    await openMobileMenuIfNeeded(page);
     for (const locale of LOCALES) {
       await expect(page.locator('header').getByRole('button', { name: locale.button, exact: true })).toBeVisible();
     }
-    await expect(page.locator('header nav a[href="/"]')).toHaveText(headerText('ru').home);
+    await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('ru').tools);
   });
 });

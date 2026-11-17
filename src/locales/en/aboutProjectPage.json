@@ -1,0 +1,44 @@
+{
+    "seoTitle": "About OpenGov.kz — Independent Civic Initiative",
+    "seoDescription": "Learn why OpenGov.kz exists, what the initiative is working on now and its plans for research, collaboration and public-interest services.",
+    "hero": {
+        "title": "Making it easier for people to participate in public affairs",
+        "p1": "OpenGov.kz is an independent civic initiative in Kazakhstan.",
+        "p2": "We are developing a website about open government and preparing accessible materials about government data, budgets and the discussion of regulatory decisions. We want learning about these tools to help people ask questions, verify information and propose changes."
+    },
+    "why": {
+        "title": "Why we are developing this project",
+        "p1": "Participating in public affairs requires understandable information and the opportunity to receive answers.",
+        "p2": "Where can you find information on budget spending? How can government data be used? Where can you discuss a draft legal act? We are developing a website to help people explore these questions and learn about open government tools."
+    },
+    "now": {
+        "title": "What we are doing now",
+        "p1": "We are developing OpenGov.kz and preparing materials about transparency, accountability and civic participation in Kazakhstan.",
+        "p2": "We explain what the government's open government tools are for and want to bring interested citizens and experts together to discuss practical improvements."
+    },
+    "next": {
+        "title": "What we want to develop next",
+        "items": [
+            "<strong>Research</strong> into government portals, open data and mechanisms for civic participation.",
+            "<strong>Legislative proposals</strong> to make government more transparent and accountable.",
+            "<strong>An expert community</strong> for sharing knowledge and working together.",
+            "<strong>Open-source software and services</strong> built on government data.",
+            "<strong>Publications and events</strong> to help more people understand open government."
+        ],
+        "note": "We are also considering establishing a nonprofit organization as a possible future direction for the initiative."
+    },
+    "principles": {
+        "title": "Our principles",
+        "items": [
+            { "title": "Independence", "text": "OpenGov.kz is a civic initiative. This website is not an official government resource." },
+            { "title": "Verifiability", "text": "We cite sources and distinguish facts from assessments and proposals." },
+            { "title": "Clarity about results", "text": "We distinguish plans, work in progress and completed results." },
+            { "title": "Plain language", "text": "We explain terms and show how each topic relates to people's needs." }
+        ]
+    },
+    "collaborate": {
+        "title": "Suggest a collaboration",
+        "text": "Would you like to suggest a topic, share experience or discuss working together? Tell us which issue interests you and what you propose.",
+        "cta": "Ways to participate"
+    }
+}
