@@ -1,0 +1,10 @@
+/* Design v1.2 tokens (Q-OGK-DESIGN-14=A, DS-01): shared by header, footer and the eight MVP pages. */
+:root {
+  --og-navy: #142c46;
+  --og-blue: #2463cf;
+  --og-teal: #0b8175;
+  --og-bg: #f4f6f8;
+  --og-line: #dce4ed;
+  --og-text: #3b5368;
+  --og-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}

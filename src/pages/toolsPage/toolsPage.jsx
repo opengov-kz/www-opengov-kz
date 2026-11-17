@@ -2,9 +2,13 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "../../header/header";
 import Footer from "../../footer/footer";
+import Hero from "../../ui/hero";
 import toolsData from "../../data/toolsData";
 import useToolsMeta from "./useToolsMeta";
-import styles from "./toolsPage.module.css";
+import s from "../../ui/page.module.css";
+
+// Texts and SEO: ED-TOOLS RU/KK/EN (#8, unchanged); layout: design v1.2.
+const ICONS = { openData: "▤", openBudgets: "▥", legalActs: "▣" };
 
 function ToolsPage() {
     const { t } = useTranslation("toolsPage");
@@ -13,28 +17,27 @@ function ToolsPage() {
     return (
         <>
             <Header />
-            <main>
-                <div className={styles.first_block}>
-                    <div className={styles.first_block_inner}>
-                        <h1 className={styles.title}>{t("catalog.title")}</h1>
-                        <p className={styles.description}>{t("catalog.intro")}</p>
-                    </div>
-                </div>
+            <main className={s.page}>
+                <Hero title={t("catalog.title")} art="▤">
+                    <p className={s.lead}>{t("catalog.intro")}</p>
+                </Hero>
 
-                <div className={styles.second_block}>
-                    <ul className={styles.cards}>
-                        {Object.entries(toolsData).map(([key, tool]) => (
-                            <li key={key} className={styles.card}>
-                                <h2 className={styles.card_title}>
-                                    <Link to={tool.path}>{t(`catalog.cards.${key}.title`)}</Link>
-                                </h2>
-                                <p className={styles.card_description}>
-                                    {t(`catalog.cards.${key}.description`)}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <section>
+                    <div className={s.wrap}>
+                        <ul className={s.grid}>
+                            {Object.entries(toolsData).map(([key, tool]) => (
+                                <li key={key} className={s.card}>
+                                    <div className={s.icon} aria-hidden="true">{ICONS[key]}</div>
+                                    <h2>{t(`catalog.cards.${key}.title`)}</h2>
+                                    <p>{t(`catalog.cards.${key}.description`)}</p>
+                                    <Link className={`${s.btn} ${s.secondary}`} to={tool.path}>
+                                        {t(`catalog.cards.${key}.title`)}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </section>
             </main>
             <Footer />
         </>

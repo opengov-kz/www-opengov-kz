@@ -1,0 +1,39 @@
+{
+    "seoTitle": "Community and Participation — OpenGov.kz",
+    "seoDescription": "Suggest a topic and explore ways to collaborate on open data, legislation and open government in Kazakhstan. The community is being formed.",
+    "hero": {
+        "title": "Let's discuss how to make government more open",
+        "p1": "We want to bring together citizens and experts who care about understanding government decisions and taking part in discussions about them.",
+        "p2": "If you have a question, experience or an idea about developing open government in Kazakhstan, suggest a topic for collaborative work."
+    },
+    "why": {
+        "title": "Why work together",
+        "p1": "Understanding a government budget may require an economist's expertise. Assessing a draft legal act may call for a lawyer and the people it would affect. Building a service using open data may require a researcher and a developer.",
+        "p2": "Sharing knowledge helps frame questions more precisely, verify conclusions and prepare well-founded proposals."
+    },
+    "audiences": {
+        "title": "Who might be interested",
+        "items": [
+            "<strong>Citizens and civil society organizations</strong> — raise an issue affecting people.",
+            "<strong>Journalists and researchers</strong> — discuss sources, data and analytical methods.",
+            "<strong>Lawyers and public administration specialists</strong> — assess legal provisions and propose changes.",
+            "<strong>Analysts and developers</strong> — explore data and opportunities to build services.",
+            "<strong>Writers and educators</strong> — explain complex topics in accessible language."
+        ]
+    },
+    "areas": {
+        "title": "Possible areas of collaboration",
+        "items": [
+            { "title": "Open data and government portals", "text": "Study data availability, assess portal usability and suggest improvements." },
+            { "title": "Legislation and civic participation", "text": "Discuss regulatory decisions and prepare proposals for greater transparency and accountability." },
+            { "title": "Public-interest services", "text": "Identify problems that could be addressed with open data and software." },
+            { "title": "Materials and events", "text": "Prepare explanatory publications, discussions, educational meetups and hackathons." }
+        ],
+        "note": "These are potential directions for future work. The community is still being formed."
+    },
+    "start": {
+        "title": "Where to start",
+        "p1": "Tell us which topic interests you, what question you suggest exploring and how you could contribute. Include links to data, documents or examples if you have them.",
+        "p2": "You do not need a ready-made solution to suggest a topic."
+    }
+}

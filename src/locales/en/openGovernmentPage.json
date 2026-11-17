@@ -1,0 +1,115 @@
+{
+    "seoTitle": "What Is Open Government in Kazakhstan? — OpenGov.kz",
+    "seoDescription": "Transparency, public participation and accountability: how open government works, why it matters and which tools exist in Kazakhstan.",
+    "hero": {
+        "eyebrow": "Principles of Open Government",
+        "title": "What is open government?",
+        "definition": "Open government is an approach to public governance in which information about government activities is accessible to the public, people can take part in discussing decisions, and public authorities explain their actions and are accountable for results.",
+        "text": "Its foundations are transparency, public participation and accountability. Open government is not a single website, nor is it simply moving public services online. It is about the relationship between government and society, based on access to information, feedback and the ability to scrutinize decisions.",
+        "cta": "Explore the tools"
+    },
+    "comparison": {
+        "title": "How the relationship between government and society changes",
+        "before": {
+            "title": "When transparency and participation are limited",
+            "steps": [
+                "A public authority develops and adopts a decision.",
+                "The public learns about it mainly after it has been adopted or implemented.",
+                "Opportunities to examine the rationale in advance, suggest changes and assess the outcome are limited."
+            ]
+        },
+        "after": {
+            "title": "When open government principles are put into practice",
+            "steps": [
+                "<strong>Government publishes information:</strong> draft decisions, data, budgets and performance results.",
+                "<strong>People and experts examine it:</strong> they ask questions, compare facts and identify problems.",
+                "<strong>The public participates in discussions:</strong> it submits suggestions and comments through established channels.",
+                "<strong>Public authorities consider contributions and explain decisions:</strong> people can see which suggestions were accepted or rejected, and why.",
+                "<strong>Outcomes can be assessed:</strong> promises, spending and actual delivery can be compared."
+            ]
+        },
+        "note": "<strong>Important:</strong> this compares two approaches. It does not claim that all these mechanisms already work effectively in Kazakhstan. A portal or published document alone does not guarantee participation or accountability."
+    },
+    "principles": {
+        "title": "Three core principles",
+        "items": [
+            {
+                "title": "Transparency",
+                "text": "Government discloses information about its decisions and activities in a form that is understandable and usable: budgets, procurement, draft regulations, statistics and programme results, subject to restrictions established by law.",
+                "example": "<strong>Example:</strong> residents want to know how much funding has been allocated to build a school, who is responsible and how construction is progressing. Access to relevant documents and data enables informed questions and fact-checking."
+            },
+            {
+                "title": "Public participation",
+                "text": "Individuals, businesses and civil society organisations can do more than receive information. They can propose changes, join discussions, submit requests and assess decisions. Meaningful participation requires clarity about deadlines, how suggestions are reviewed and what follows from a consultation.",
+                "example": "<strong>Example:</strong> a business owner reviews a draft legal act, assesses how new requirements may affect their business and submits comments before adoption."
+            },
+            {
+                "title": "Accountability",
+                "text": "Public authorities should explain their decisions and results, respond to substantiated questions and concerns, and make it possible to review implementation within the applicable procedures.",
+                "example": "<strong>Example:</strong> after a government programme ends, the public compares stated goals, spending and published results, and requests explanations for discrepancies."
+            }
+        ],
+        "summary": "<strong>Transparency provides information; participation gives people a voice; accountability enables them to obtain explanations and assess outcomes.</strong> These principles reinforce one another."
+    },
+    "practice": {
+        "title": "How it works in practice",
+        "p1": "Imagine that a city plans to improve a public space. Residents can review published plans and budgets, discuss priorities, propose changes and later compare completed work with what was promised. If suggestions are rejected, it matters that people can find out why.",
+        "p2": "This sequence illustrates the value of open government: <strong>information → discussion → reasoned response → assessment of results</strong>. Its effectiveness depends on the completeness of information, access to participation and how well public authorities respond to input and make decisions open to scrutiny."
+    },
+    "elements": {
+        "title": "Elements of open government",
+        "items": [
+            { "title": "Open data", "text": "Government data published in formats suitable for processing and reuse can support research, maps, analytical services and applications. Its value depends not only on availability but also on completeness, quality and timeliness.", "cta": "Learn about open data" },
+            { "title": "Open budgets", "text": "Information about budget planning and execution helps people understand where public funds come from, which programmes receive funding and how money is spent. It provides a starting point for public analysis of expenditure.", "cta": "Learn about open budgets" },
+            { "title": "Open legal acts and draft regulations", "text": "Publication of draft legal acts and established consultation procedures allows people and organisations to review proposed rules in advance and submit comments. The opportunity to participate does not guarantee that a suggestion will be accepted.", "cta": "Learn about consultations on legal acts" },
+            { "title": "Requests and feedback", "text": "Petitions, information requests and other channels provided by law allow people to report problems, ask questions and receive an official response. The quality of a mechanism also depends on clear procedures, timelines and substantive replies." },
+            { "title": "Evaluating public authorities", "text": "Public indicators, reports and programme results allow discussion of whether stated objectives were achieved and how resources were used. Objective assessment requires sound measurement methods, reliable data and opportunities for independent verification." }
+        ]
+    },
+    "audiences": {
+        "title": "Who benefits, and why?",
+        "items": [
+            {
+                "title": "For citizens",
+                "points": [
+                    "<strong>Understand decisions.</strong> Find out which projects receive funding and who is responsible.",
+                    "<strong>Participate.</strong> Offer suggestions before decisions are made and use available feedback channels.",
+                    "<strong>Check results.</strong> Compare plans, expenditure and delivery, and ask evidence-based questions."
+                ]
+            },
+            {
+                "title": "For government",
+                "points": [
+                    "<strong>Make better-informed decisions.</strong> Receive input from citizens, businesses and experts, and consider different interests.",
+                    "<strong>Identify problems.</strong> Use feedback to assess programmes and public services.",
+                    "<strong>Build trust through verifiable action.</strong> Explain the reasons for decisions and show results. Trust does not arise automatically; it depends on real actions and consistent accountability."
+                ]
+            },
+            {
+                "title": "For businesses",
+                "points": [
+                    "<strong>Understand regulation.</strong> Review proposed rules in advance and assess their implications.",
+                    "<strong>Analyse public spending and procurement.</strong> Use published information to assess opportunities and risks.",
+                    "<strong>Create new products.</strong> Develop analytical and digital services using quality open data where the terms of use permit it."
+                ]
+            }
+        ]
+    },
+    "international": {
+        "title": "International reference points",
+        "p1": "Open government principles are developed and discussed internationally. The <strong>Open Government Partnership (OGP)</strong> brings together practices relating to openness and participation; the <strong>Organisation for Economic Co-operation and Development (OECD)</strong> develops recommendations on open government; and the <strong>United Nations</strong>, through Sustainable Development Goal 16, addresses accountable institutions, participation and access to information.",
+        "p2": "These are different kinds of initiatives and documents. Mentioning them <strong>does not imply any claim about Kazakhstan's membership or specific international obligations</strong>.",
+        "sourcesLabel": "Primary sources for further verification:",
+        "sources": ["OGP", "OECD", "UN SDG 16"]
+    },
+    "kazakhstan": {
+        "title": "Open government in Kazakhstan",
+        "text": "Kazakhstan has digital tools related to the publication of data, budget information and consultations on draft legal acts. To understand their purpose, capabilities and limitations, start with the topic pages on OpenGov.kz.",
+        "cta": "Explore Kazakhstan's tools",
+        "aboutQuestion": "Want to know why the independent OpenGov.kz project was created?",
+        "aboutCta": "About the project",
+        "communityQuestion": "Interested in opportunities to take part in the civic initiative?",
+        "communityCta": "Community",
+        "disclaimer": "OpenGov.kz is an independent civic initiative. This website is not an official government resource."
+    }
+}

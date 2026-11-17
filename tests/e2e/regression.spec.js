@@ -3,8 +3,8 @@
 // defects stay Failed (BRULE-TEST-05). /projects: no assertions on unpublished content (#14).
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, P0_ROUTES, ROUTES, UNKNOWN_ROUTE, burger, expectRendered, headerText, htmlLang, note,
-  openMobileMenuIfNeeded, overflow, setLocale, watchErrors,
+  HEADER_LINKS, LOCALES, P0_ROUTES, ROUTES, UNKNOWN_ROUTE, expectRendered, headerText, htmlLang, note,
+  overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 const TOOL_PORTALS = {
@@ -76,18 +76,17 @@ test.describe('@regression', () => {
 
   test('PW-05 browser back/forward across header navigation', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
-    for (const href of ['/aboutMe', '/news']) {
-      await openMobileMenuIfNeeded(page);
+    for (const href of ['/open-government', '/community']) {
       await page.locator(`header nav a[href="${href}"]`).click();
       await expect(page).toHaveURL(href);
     }
     await page.goBack();
-    await expect(page).toHaveURL('/aboutMe');
+    await expect(page).toHaveURL('/open-government');
     await page.goBack();
     await expect(page).toHaveURL('/');
     await expectRendered(page);
     await page.goForward();
-    await expect(page).toHaveURL('/aboutMe');
+    await expect(page).toHaveURL('/open-government');
     await expectRendered(page);
   });
 
@@ -162,15 +161,15 @@ test.describe('@regression', () => {
     test(`PW-08 ${route} links to approved portal ${portal} (href only)`, async ({ page }) => {
       await page.goto(route, { waitUntil: 'load' });
       await expect(page.locator(`main a[href="${portal}"]`)).toHaveCount(1);
-      await page.locator('main a[href="/tools"]').click();
+      await page.locator('main a[href="/tools"]', { hasText: 'Все инструменты' }).click(); // breadcrumb also links /tools
       await expect(page).toHaveURL('/tools');
     });
   }
 
-  test('PW-08 homepage hero CTA navigates to /aboutMe (baseline)', async ({ page }) => {
+  test('PW-08 homepage hero CTA navigates to /open-government (v1.2)', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
-    await page.locator('a[href="/aboutMe"]:not(header a):not(footer a)').click(); // hero CTA link (#19, AC-SUI-04)
-    await expect(page).toHaveURL('/aboutMe');
+    await page.locator('main a[href="/open-government"]').first().click(); // primary hero CTA (#26)
+    await expect(page).toHaveURL('/open-government');
     await expectRendered(page);
   });
 
@@ -200,35 +199,35 @@ test.describe('@regression', () => {
       }));
     }
     const header = seen.filter((s) => s.inHeader);
-    for (const id of [...HEADER_LINKS, 'РУС', 'ҚАЗ', 'ENG']) {
+    for (const id of ['/', ...HEADER_LINKS, 'РУС', 'ҚАЗ', 'ENG']) {
       expect.soft(header.map((s) => s.id), `${id} reachable by Tab`).toContain(id);
     }
     const noRing = [...new Set(header.filter((s) => !s.visibleFocus).map((s) => s.id))];
     expect.soft(noRing, 'header controls without visible focus indicator').toEqual([]);
     expect(new Set(seen.map((s) => s.id)).size, 'focus keeps moving (no trap)').toBeGreaterThan(8);
 
-    await page.locator('header nav a[href="/news"]').focus();
+    await page.locator('header nav a[href="/community"]').focus();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL('/news');
+    await expect(page).toHaveURL('/community');
     await page.locator('header').getByRole('button', { name: 'ENG', exact: true }).focus();
     await page.keyboard.press('Enter');
-    await expect(page.locator('header nav a[href="/"]')).toHaveText(headerText('en').home);
+    await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('en').tools);
     await page.locator('header').getByRole('button', { name: 'ҚАЗ', exact: true }).focus();
     await page.keyboard.press('Space');
-    await expect(page.locator('header nav a[href="/"]')).toHaveText(headerText('kz').home);
+    await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('kz').tools);
   });
 
-  test('PW-09 mobile keyboard: burger menu', async ({ page }, testInfo) => {
-    test.skip(!isMobile(testInfo), 'burger is shown only at <= 768 px');
+  // #26 replaced the burger (#19 D5) with the approved always-visible two-row navigation (Q-OGK-DESIGN-11=A).
+  test('PW-09 mobile keyboard: logo, navigation and language buttons in order, no burger', async ({ page }, testInfo) => {
+    test.skip(!isMobile(testInfo), 'mobile two-row header');
     await page.goto('/', { waitUntil: 'load' });
-    await page.keyboard.press('Tab');
-    await expect(burger(page), 'burger is first Tab stop').toBeFocused();
-    await page.keyboard.press('Enter');
-    await expect(page.locator('header nav'), 'Enter opens menu').toBeVisible();
-    await page.keyboard.press('Tab');
-    await expect(page.locator('header nav a[href="/"]'), 'Tab moves into opened menu').toBeFocused();
-    await expect.soft(burger(page), 'burger has accessible name').toHaveAccessibleName(/\S/);
-    await expect.soft(burger(page), 'burger exposes aria-expanded=true when open').toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('header button[aria-expanded]'), 'no burger').toHaveCount(0);
+    const order = [];
+    for (let i = 0; i < 8; i++) {
+      await page.keyboard.press('Tab');
+      order.push(await page.evaluate(() => document.activeElement.getAttribute('href') ?? document.activeElement.textContent.trim()));
+    }
+    expect(order).toEqual(['/', ...HEADER_LINKS, 'РУС', 'ҚАЗ', 'ENG']);
   });
 
   // PW-10 on the routes outside the P0 Smoke sample (P0 routes are covered in smoke.spec.js).

@@ -10,6 +10,9 @@
     { "source": "/tools", "destination": "/index.html" },
     { "source": "/tools/open-data", "destination": "/index.html" },
     { "source": "/tools/open-budgets", "destination": "/index.html" },
-    { "source": "/tools/legal-acts", "destination": "/index.html" }
+    { "source": "/tools/legal-acts", "destination": "/index.html" },
+    { "source": "/open-government", "destination": "/index.html" },
+    { "source": "/community", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" }
   ]
 }

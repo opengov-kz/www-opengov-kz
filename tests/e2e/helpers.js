@@ -1,13 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
-// The 12 SPA routes declared in src/App.jsx (a3c71ab).
-export const ROUTES = ['/', '/aboutMe', '/news', '/projects', '/members', '/newsDetail', '/projectDetail',
-  '/membersDetail', '/tools', '/tools/open-data', '/tools/open-budgets', '/tools/legal-acts'];
+// The 15 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + 7 preserved legacy routes.
+export const MVP_ROUTES = ['/', '/open-government', '/tools', '/tools/open-data', '/tools/open-budgets',
+  '/tools/legal-acts', '/community', '/about'];
+export const LEGACY_ROUTES = ['/aboutMe', '/news', '/projects', '/members', '/newsDetail', '/projectDetail',
+  '/membersDetail'];
+export const ROUTES = [...MVP_ROUTES, ...LEGACY_ROUTES];
 // Q-OGK-TEST-15=A P0 Smoke sample; /projects is reachability only (content owned by #14).
 export const P0_ROUTES = ['/', '/tools', '/tools/open-data', '/projects'];
 export const UNKNOWN_ROUTE = '/pw-e2e-unknown-route';
-export const HEADER_LINKS = ['/', '/aboutMe', '/news', '/members', '/projects'];
+// v1.2 header navigation (#26); the logo links to '/'.
+export const HEADER_LINKS = ['/open-government', '/tools', '/community', '/about'];
 
 // i18next key -> header button label -> semantic HTML lang (Q-OGK-TEST-12=A: kz -> kk).
 export const LOCALES = [
@@ -20,24 +24,16 @@ const readLocale = (lang, ns) =>
   JSON.parse(readFileSync(new URL(`../../src/locales/${lang}/${ns}.json`, import.meta.url), 'utf8'));
 export const headerText = (lang) => readLocale(lang, 'header');
 export const notFoundText = (lang) => readLocale(lang, 'notFoundPage');
+export const mainPageText = (lang) => readLocale(lang, 'mainPage');
 
 export const note = (type, description) => test.info().annotations.push({ type, description });
 
-export const burger = (page) => page.locator('header > button');
-
-export async function openMobileMenuIfNeeded(page) {
-  const nav = page.locator('header nav');
-  if (!(await nav.isVisible()) && (await burger(page).isVisible())) {
-    await burger(page).click();
-    await expect(nav).toBeVisible();
-  }
-}
-
 // Locale is not persisted by the app, so every test switches it through the UI.
+// Since #26 the header has no burger: navigation and language buttons are always visible.
 export async function setLocale(page, locale) {
-  await openMobileMenuIfNeeded(page);
   await page.locator('header').getByRole('button', { name: locale.button, exact: true }).click();
-  await expect(page.locator('header nav a[href="/"]')).toHaveText(headerText(locale.key).home);
+  await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText(locale.key).tools);
+  await expect(page.locator('html')).toHaveAttribute('lang', locale.htmlLang);
 }
 
 export async function expectRendered(page) {

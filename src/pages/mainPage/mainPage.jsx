@@ -1,108 +1,77 @@
-import styles from "./mainPage.module.css"
-import Header from "../../header/header";
-import Footer from "../../footer/footer";
-import Card from "./mainPageCard1/card";
-import Card2 from "./card2/card2";
-import NewsCard from "./newsCards/newsCard";
-import ProjectCards from "./projectCards/projectCards";
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Header from '../../header/header';
+import Footer from '../../footer/footer';
+import Hero from '../../ui/hero';
+import usePageMeta from '../../usePageMeta';
+import s from '../../ui/page.module.css';
 
+// v1.2 home (RU master 06.11.2026, KK/EN Q-OGK-ED-05-05=A).
 function MainPage() {
-    const { t } = useTranslation('mainPage'); // 👈 указываем namespace
+    const { t } = useTranslation('mainPage');
+    usePageMeta(t('seoTitle'), t('seoDescription'));
+    const list = (key) => t(key, { returnObjects: true });
+
     return (
         <>
             <Header />
-            <div className={styles.first_block}>
-                <div className={styles.first_block_inner}>
-                    <div className={styles.group}>
-                        <div className={styles.title}>{t('mainPage.title1')}</div>
-                        <div className={styles.description}>{t('mainPage.description1')}</div>
-                        <Link to="/aboutMe" className={styles.more_button}>{t('mainPage.learnMore')}</Link>
+            <main className={s.page}>
+                <Hero title={t('hero.title')} art="◈">
+                    <p className={s.lead}>{t('hero.questions')}</p>
+                    <p className={s.lead}>{t('hero.intro')}</p>
+                    <div className={s.actions}>
+                        <Link className={s.btn} to="/open-government">{t('hero.ctaPrimary')}</Link>
+                        <Link className={`${s.btn} ${s.secondary}`} to="/community">{t('hero.ctaSecondary')}</Link>
                     </div>
-                    <img src="/mainPage_1.png" alt="" />
-                </div>
-            </div>
+                </Hero>
 
-            <div className={styles.second_block}>
-                <div className={styles.second_block_inner}>
-                    <div className={styles.title}>{t('mainPage.title2')}</div>
-                    <div className={styles.description}>{t('mainPage.description2')}</div>
-                    <div className={styles.cards}>
-                        <Card imgSrc='/mp_Card1.svg' title={t('mainPage.card1.title')} description={t('mainPage.card1.desc')} />
-                        <Card imgSrc='/mp_Card2.svg' title={t('mainPage.card2.title')} description={t('mainPage.card2.desc')} />
-                        <Card imgSrc='/mp_Card3.svg' title={t('mainPage.card3.title')} description={t('mainPage.card3.desc')} />
+                <section>
+                    <div className={s.wrap}>
+                        <h2>{t('principles.title')}</h2>
+                        <div className={s.grid}>
+                            {list('principles.items').map((item) => (
+                                <article key={item.title} className={s.card}>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.text}</p>
+                                </article>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <div className={styles.third_block}>
-                <div className={styles.third_block_inner}>
-                    <img className={styles.img} src="/mainPage_2.png" alt="" />
-                    <div className={styles.group}>
-                        <div className={styles.title}>{t('mainPage.title3')}</div>
-                        <div className={styles.description}>{t('mainPage.description3')}</div>
-                        <ul className={styles.list}>
-                            <li className={styles.list_item}><img src="/mainPage_3.svg" alt="" /> {t('mainPage.data1')}</li>
-                            <li className={styles.list_item}><img src="/mainPage_3.svg" alt="" /> {t('mainPage.data2')}</li>
-                            <li className={styles.list_item}><img src="/mainPage_3.svg" alt="" /> {t('mainPage.data3')}</li>
-                            <li className={styles.list_item}><img src="/mainPage_3.svg" alt="" /> {t('mainPage.data4')}</li>
-                        </ul>
+                <section>
+                    <div className={s.wrap}>
+                        <h2>{t('tools.title')}</h2>
+                        <p>{t('tools.intro')}</p>
+                        <div className={s.grid}>
+                            {list('tools.items').map((item) => (
+                                <article key={item.title} className={s.card}>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.text}</p>
+                                </article>
+                            ))}
+                        </div>
+                        <Link className={`${s.btn} ${s.secondary} ${s.section_cta}`} to="/tools">{t('tools.cta')}</Link>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <div className={styles.fourth_block}>
-                <div className={styles.fourth_block_inner}>
-                    <div className={styles.title}>{t('mainPage.title4')}</div>
-                    <div className={styles.cards}>
-                        <Card2 imgSrc='/mp_Card4.svg' title={t('mainPage.card4.title')} description={t('mainPage.card4.desc')} />
-                        <Card2 imgSrc='/mp_Card5.svg' title={t('mainPage.card5.title')} description={t('mainPage.card5.desc')} />
-                        <Card2 imgSrc='/mp_Card6.svg' title={t('mainPage.card6.title')} description={t('mainPage.card6.desc')} />
-                        <Card2 imgSrc='/mp_Card7.svg' title={t('mainPage.card7.title')} description={t('mainPage.card7.desc')} />
+                <section>
+                    <div className={s.wrap}>
+                        <h2>{t('participate.title')}</h2>
+                        <p>{t('participate.p1')}</p>
+                        <p>{t('participate.p2')}</p>
+                        <Link className={`${s.btn} ${s.secondary} ${s.section_cta}`} to="/community">{t('participate.cta')}</Link>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <div className={styles.fifth_block}>
-                <div className={styles.fifth_block_inner}>
-                    <div className={styles.title}>{t('mainPage.newsTitle')}</div>
-                    <div className={styles.cards}>
-                        <NewsCard imgSrc='/mainPage_4.png' date="15 марта 2024" title={t('mainPage.news1.title')} description={t('mainPage.news1.desc')} link="/newsDetail" />
-                        <NewsCard imgSrc='/mainPage_5.png' date="12 марта 2024" title={t('mainPage.news2.title')} description={t('mainPage.news2.desc')} link="/newsDetail" />
-                        <NewsCard imgSrc='/mainPage_6.png' date="10 марта 2024" title={t('mainPage.news3.title')} description={t('mainPage.news3.desc')} link="/newsDetail" />
+                <section>
+                    <div className={s.wrap}>
+                        <h2>{t('about.title')}</h2>
+                        <p>{t('about.text')}</p>
+                        <Link className={`${s.btn} ${s.secondary} ${s.section_cta}`} to="/about">{t('about.cta')}</Link>
                     </div>
-                </div>
-            </div>
-
-            <div className={styles.sixth_block}>
-                <div className={styles.sixth_block_inner}>
-                    <div className={styles.title}>{t('mainPage.projectTitle')}</div>
-                    <div className={styles.cards}>
-                        <ProjectCards
-                            imgSrc='/mp_Card9.svg'
-                            title={t('mainPage.project1.title')}
-                            status={t('mainPage.project1.status')}
-                            description={t('mainPage.project1.desc')}
-                            progress="70%"
-                            link="/projectDetail" />
-                        <ProjectCards
-                            imgSrc='/mp_Card10.svg'
-                            title={t('mainPage.project2.title')}
-                            status={t('mainPage.project2.status')}
-                            description={t('mainPage.project2.desc')}
-                            progress="90%"
-                            link="/projectDetail" />
-                        <ProjectCards
-                            imgSrc='/mp_Card11.svg'
-                            title={t('mainPage.project3.title')}
-                            status={t('mainPage.project3.status')}
-                            description={t('mainPage.project3.desc')}
-                            progress="100%"
-                            link="/projectDetail" />
-                    </div>
-                </div>
-            </div>
+                </section>
+            </main>
             <Footer />
         </>
     );
