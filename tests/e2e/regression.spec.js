@@ -3,8 +3,8 @@
 // defects stay Failed (BRULE-TEST-05). /projects: no assertions on unpublished content (#14).
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, P0_ROUTES, ROUTES, UNKNOWN_ROUTE, expectRendered, headerText, htmlLang, note,
-  overflow, setLocale, watchErrors,
+  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
+  headerText, htmlLang, isServerNotFound, note, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 const TOOL_PORTALS = {
@@ -55,6 +55,12 @@ test.describe('@regression', () => {
   for (const route of [...ROUTES, UNKNOWN_ROUTE]) {
     for (const locale of LOCALES) {
       test(`PW-03 html lang ${route} [${locale.key}] = ${locale.htmlLang}`, async ({ page }) => {
+        if (isServerNotFound(route)) {
+          // Static 404: document lang is ru, each language is marked by its own <section lang> with its copy.
+          await expectNotFound(page, route, locale);
+          await expect(page.locator('main section[lang]')).toHaveCount(LOCALES.length);
+          return;
+        }
         await page.goto(route, { waitUntil: 'load' });
         await setLocale(page, locale);
         const actual = await htmlLang(page);
@@ -101,7 +107,11 @@ test.describe('@regression', () => {
     await expect(page).toHaveURL('/tools/open-data');
   });
 
-  test('PW-06 nested unknown path renders client NotFound', async ({ page }) => {
+  test(`PW-06 nested unknown path renders ${NOT_FOUND_MODE} NotFound`, async ({ page }) => {
+    if (SERVER_404) {
+      for (const locale of LOCALES) await expectNotFound(page, '/nested/pw-e2e/unknown', locale);
+      return;
+    }
     await page.goto('/nested/pw-e2e/unknown', { waitUntil: 'load' });
     await expect(page.locator('main a[href="/"]')).toBeVisible();
     await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
@@ -110,8 +120,7 @@ test.describe('@regression', () => {
   for (const route of [...ROUTES, UNKNOWN_ROUTE]) {
     for (const locale of LOCALES) {
       test(`PW-07 no horizontal overflow ${route} [${locale.key}]`, async ({ page }) => {
-        await page.goto(route, { waitUntil: 'load' });
-        await setLocale(page, locale);
+        await openLocalized(page, route, locale);
         const o = await overflow(page);
         note('overflow', `scrollWidth=${o.scrollWidth}, viewport=${o.viewport}`);
         expect(o.scrollWidth, '0 px tolerance (Q-OGK-TEST-16=A)').toBeLessThanOrEqual(o.viewport);

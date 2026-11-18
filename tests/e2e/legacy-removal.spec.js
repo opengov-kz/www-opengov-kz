@@ -1,9 +1,10 @@
 // Issue #28: six legacy routes removed (Q-OGK-MVP-RB-04=A), "Подробнее" removed from /projects cards
-// (Q-OGK-MVP-RB-06=B). Local `vite preview` answers every path with index.html (200), so server
-// HTTP 404 is asserted on vercel.json here; the client side is asserted in the browser.
+// (Q-OGK-MVP-RB-06=B). Locally `vite preview` answers every path with index.html (200), so the client
+// NotFound is asserted in the browser and server 404 on vercel.json; with PW_BASE_URL (Vercel) AC-01
+// asserts the real HTTP 404 static page instead (F-08, helpers.expectNotFound).
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { LOCALES, REMOVED_ROUTES, ROUTES, notFoundText, setLocale } from './helpers.js';
+import { LOCALES, NOT_FOUND_MODE, REMOVED_ROUTES, ROUTES, expectNotFound, setLocale } from './helpers.js';
 
 const vercel = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
 const projectsText = (lang) =>
@@ -19,12 +20,8 @@ test.describe('@regression #28 legacy removal', () => {
 
   for (const route of REMOVED_ROUTES) {
     for (const locale of LOCALES) {
-      test(`AC-01 removed ${route} [${locale.key}] renders client NotFound`, async ({ page }) => {
-        await page.goto(route, { waitUntil: 'load' });
-        await setLocale(page, locale);
-        await expect(page.locator('main h1')).toHaveText(notFoundText(locale.key).title);
-        await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
-        await expect(page.locator('main a[href="/"]')).toBeVisible();
+      test(`AC-01 removed ${route} [${locale.key}] renders ${NOT_FOUND_MODE} NotFound`, async ({ page }) => {
+        await expectNotFound(page, route, locale);
       });
     }
   }

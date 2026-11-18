@@ -1,3 +1,4 @@
+/* global process */
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
@@ -35,6 +36,46 @@ export async function setLocale(page, locale) {
   await page.locator('header').getByRole('button', { name: locale.button, exact: true }).click();
   await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText(locale.key).tools);
   await expect(page.locator('html')).toHaveAttribute('lang', locale.htmlLang);
+}
+
+// F-08 (Q-OGK-MVP-RB-08=B): the environment is chosen only by PW_BASE_URL (see playwright.config.js).
+// Local `vite preview` answers every path with the SPA, so React renders the client NotFound. A deployed
+// Vercel build answers paths outside vercel.json with HTTP 404 and the static trilingual public/404.html:
+// no React, no header, no language buttons, each language in its own <section lang>.
+export const SERVER_404 = Boolean(process.env.PW_BASE_URL);
+export const NOT_FOUND_MODE = SERVER_404 ? 'HTTP 404' : 'client';
+export const isServerNotFound = (route) => SERVER_404 && !ROUTES.includes(route);
+
+// NotFound for `route` in `locale`: client NotFound after switching the locale locally; on Vercel the real
+// HTTP 404 without redirect, noindex, and the locale's section with the same copy as notFoundPage.json.
+export async function expectNotFound(page, route, locale) {
+  const response = await page.goto(route, { waitUntil: 'load' });
+  const copy = notFoundText(locale.key);
+  if (!SERVER_404) {
+    await setLocale(page, locale);
+    await expect(page.locator('main h1')).toHaveText(copy.title);
+  } else {
+    note('environment', `HTTP 404 static page: ${response.url()}`);
+    expect(response.status(), 'server HTTP status').toBe(404);
+    expect(response.request().redirectedFrom(), 'redirect before the 404').toBeNull();
+    expect(new URL(response.url()).pathname, 'final URL').toBe(route);
+    expect(response.headers()['content-type'] ?? '').toContain('text/html');
+    await expect(page.locator('#root'), 'React must not render on the server 404').toHaveCount(0);
+    await expect(page).toHaveTitle(new RegExp(copy.title));
+    const section = page.locator(`main section[lang="${locale.htmlLang}"]`);
+    await expect(section.locator('h1, h2')).toHaveText(copy.title);
+    await expect(section.locator('p')).toHaveText(copy.text);
+    await expect(section.locator('a[href="/"]')).toHaveText(copy.homeLink);
+  }
+  await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
+  await expect(page.locator('main a[href="/"]').first()).toBeVisible();
+}
+
+// goto + locale switch; on Vercel an unknown/removed path is the static 404, checked for that locale instead.
+export async function openLocalized(page, route, locale) {
+  if (isServerNotFound(route)) return expectNotFound(page, route, locale);
+  await page.goto(route, { waitUntil: 'load' });
+  await setLocale(page, locale);
 }
 
 export async function expectRendered(page) {
