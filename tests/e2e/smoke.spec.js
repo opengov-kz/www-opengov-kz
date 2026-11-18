@@ -2,8 +2,8 @@
 // /projects (reachability only) and one unknown path, both viewports, RU/KZ/EN where applicable.
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, P0_ROUTES, UNKNOWN_ROUTE, expectRendered, headerText, htmlLang, mainPageText, note,
-  notFoundText, overflow, setLocale, watchErrors,
+  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
+  headerText, htmlLang, mainPageText, note, notFoundText, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 test.describe('@smoke', () => {
@@ -53,28 +53,30 @@ test.describe('@smoke', () => {
   }
 
   for (const locale of LOCALES) {
-    test(`PW-06 client NotFound ${locale.key}: copy, title, lang, noindex and cleanup`, async ({ page }) => {
+    test(`PW-06 ${NOT_FOUND_MODE} NotFound ${locale.key}: copy, title, lang, noindex and cleanup`, async ({ page }) => {
       const copy = notFoundText(locale.key);
-      await page.goto(UNKNOWN_ROUTE, { waitUntil: 'load' });
-      await setLocale(page, locale);
-      await expect(page.locator('main h1')).toHaveText(copy.title);
-      await expect(page).toHaveTitle(copy.seoTitle);
-      expect(await htmlLang(page)).toBe(locale.htmlLang);
-      await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
-      const home = page.locator('main a[href="/"]');
+      await expectNotFound(page, UNKNOWN_ROUTE, locale);
+      // Server 404: one static page for all languages (document lang ru, locale in its <section lang>).
+      const home = SERVER_404
+        ? page.locator(`main section[lang="${locale.htmlLang}"] a[href="/"]`)
+        : page.locator('main a[href="/"]');
+      if (!SERVER_404) {
+        await expect(page).toHaveTitle(copy.seoTitle);
+        expect(await htmlLang(page)).toBe(locale.htmlLang);
+      }
       await expect(home).toHaveText(copy.homeLink);
       await home.click();
       await expect(page).toHaveURL('/');
       await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(0);
-      await expect(page).toHaveTitle(mainPageText(locale.key).seoTitle);
+      // The locale is not persisted, so after a full page load (server 404 -> /) the app starts in ru.
+      await expect(page).toHaveTitle(mainPageText(SERVER_404 ? 'ru' : locale.key).seoTitle);
     });
   }
 
   for (const route of [...P0_ROUTES, UNKNOWN_ROUTE]) {
     for (const locale of LOCALES) {
       test(`PW-07 no horizontal overflow ${route} [${locale.key}]`, async ({ page }) => {
-        await page.goto(route, { waitUntil: 'load' });
-        await setLocale(page, locale);
+        await openLocalized(page, route, locale);
         const o = await overflow(page);
         note('overflow', `${route} ${locale.key}: scrollWidth=${o.scrollWidth}, viewport=${o.viewport}`);
         expect(o.scrollWidth, 'document width beyond viewport, 0 px tolerance (Q-OGK-TEST-16=A)')

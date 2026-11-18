@@ -3,7 +3,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@playwright/test';
 
-// Local-only Chromium E2E (Issue #17). Evidence guard (F-17-02, Q-OGK-TEST-30=A): Playwright
+// Chromium E2E (Issue #17), local by default, optionally against a deployment (PW_BASE_URL, below). Evidence guard (F-17-02, Q-OGK-TEST-30=A): Playwright
 // deletes outputDir and overwrites the JSON report at start, so every run gets its own never
 // reused folder. The default ID is unique per invocation and is exported to process.env so
 // worker processes, which reload this file, resolve the same folder.
@@ -39,6 +39,18 @@ if (![guardToken, `${runId}:${process.ppid}`].includes(process.env.PW_RUN_GUARD)
 const negativeControl = process.env.PW_NEGATIVE_CONTROL === '1';
 const port = 4173;
 
+// Environment (F-08, Q-OGK-MVP-RB-08=B), selected only by PW_BASE_URL:
+// - unset: local `npm run build` + `vite preview` (SPA answers every path, client React NotFound);
+// - set (e.g. https://<preview>.vercel.app): no local server, tests run against that deployment, unknown and
+//   removed paths must return HTTP 404 with the static public/404.html (tests/e2e/helpers.js expectNotFound).
+// PW_STORAGE_STATE (optional) is a storageState file with an access cookie for a protected Preview; keep it outside
+// the repo. Traces are then off because they record request cookies.
+const remoteBase = process.env.PW_BASE_URL;
+if (remoteBase && !/^https?:\/\/[^/]+\/?$/.test(remoteBase)) {
+  throw new Error(`PW_BASE_URL "${remoteBase}" must be an origin like https://host`);
+}
+const storageState = process.env.PW_STORAGE_STATE || undefined;
+
 export default defineConfig({
   testDir: 'tests/e2e',
   outputDir,
@@ -50,16 +62,17 @@ export default defineConfig({
   grepInvert: negativeControl ? undefined : /@negative/,
   reporter: [['list'], ['json', { outputFile: reportFile }]],
   use: {
-    baseURL: `http://127.0.0.1:${port}`,
+    baseURL: remoteBase?.replace(/\/$/, '') ?? `http://127.0.0.1:${port}`,
+    storageState,
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    trace: storageState ? 'off' : 'retain-on-failure',
     video: 'off',
   },
   projects: [
     { name: 'desktop-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },
     { name: 'mobile-390', use: { browserName: 'chromium', viewport: { width: 390, height: 844 } } },
   ],
-  webServer: {
+  webServer: remoteBase ? undefined : {
     command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port} --strictPort`,
     url: `http://127.0.0.1:${port}`,
     reuseExistingServer: false,
