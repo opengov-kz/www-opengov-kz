@@ -1,10 +1,7 @@
-import { Link } from "react-router-dom";
 import styles from "./projectsCard1.module.css";
-import { useTranslation } from "react-i18next";
 
+// "Подробнее" removed by Q-OGK-MVP-RB-06=B (#28): /projectDetail no longer exists.
 function ProjectsCard1(props) {
-    const { t } = useTranslation("projectsPage");
-
     return (
         <div className={styles.card}>
             <img src={props.imgSrc} alt="" />
@@ -18,9 +15,6 @@ function ProjectsCard1(props) {
                     </div>
                 </div>
                 <div className={styles.tag}>{props.tag}</div>
-                <Link to={props.link}>
-                    <div className={styles.more}>{t("more")}</div>
-                </Link>
             </div>
         </div>
     );

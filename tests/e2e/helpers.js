@@ -1,12 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
-// The 15 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + 7 preserved legacy routes.
+// The 9 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + preserved legacy /projects (#14).
 export const MVP_ROUTES = ['/', '/open-government', '/tools', '/tools/open-data', '/tools/open-budgets',
   '/tools/legal-acts', '/community', '/about'];
-export const LEGACY_ROUTES = ['/aboutMe', '/news', '/projects', '/members', '/newsDetail', '/projectDetail',
-  '/membersDetail'];
+export const LEGACY_ROUTES = ['/projects'];
 export const ROUTES = [...MVP_ROUTES, ...LEGACY_ROUTES];
+// Removed in #28 (Q-OGK-MVP-RB-04=A): no route, no vercel.json rewrite, HTTP 404 on Vercel.
+export const REMOVED_ROUTES = ['/aboutMe', '/news', '/newsDetail', '/projectDetail', '/members', '/membersDetail'];
 // Q-OGK-TEST-15=A P0 Smoke sample; /projects is reachability only (content owned by #14).
 export const P0_ROUTES = ['/', '/tools', '/tools/open-data', '/projects'];
 export const UNKNOWN_ROUTE = '/pw-e2e-unknown-route';

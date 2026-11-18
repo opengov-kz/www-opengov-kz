@@ -1,13 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "./reset.css"
 import MainPage from "./pages/mainPage/mainPage";
-import AboutPage from './pages/aboutPage/aboutPage';
-import NewsPage from './pages/newsPage/newsPage';
 import ProjectsPage from './pages/projectsPage/projectsPage';
-import MembersPage from './pages/membersPage/membersPage';
-import NewsDetail from './pages/newsPage/newsDetail/newsDetail';
-import ProjectDetailPage from './pages/projectsPage/projectsDetailPage/projectDetailPage';
-import MembersDetailPage from './pages/membersPage/membersDetailPage/membersDetailPage';
 import OpenGovernmentPage from './pages/openGovernmentPage/openGovernmentPage';
 import CommunityPage from './pages/communityPage/communityPage';
 import AboutProjectPage from './pages/aboutProjectPage/aboutProjectPage';
@@ -23,13 +17,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path='/' element={<MainPage />} />
-          <Route path='/aboutMe' element={<AboutPage />} />
-          <Route path='/news' element={<NewsPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/members" element={<MembersPage />} />
-          <Route path="/newsDetail" element={<NewsDetail />} />
-          <Route path="/projectDetail" element={<ProjectDetailPage />} />
-          <Route path="/membersDetail" element={<MembersDetailPage />} />
           <Route path="/open-government" element={<OpenGovernmentPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/about" element={<AboutProjectPage />} />

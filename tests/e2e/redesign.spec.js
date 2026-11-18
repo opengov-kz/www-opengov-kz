@@ -1,6 +1,6 @@
 // Issue #26: design v1.2 on the eight MVP routes. AC-IMP-01…05 evidence: approved copy and SEO per locale,
 // responsive two-row header and overflow on 6 widths with full-page screenshots, forbidden content, links,
-// keyboard focus, /about vs legacy /aboutMe.
+// keyboard focus, /about vs removed /aboutMe (#28).
 import { expect, test } from '@playwright/test';
 import { APPROVED, DISCLAIMER } from './approved-copy.js';
 import { HEADER_LINKS, LOCALES, MVP_ROUTES, note, overflow, setLocale } from './helpers.js';
@@ -118,11 +118,12 @@ test.describe('@redesign', () => {
     }
   });
 
-  test('AC-IMP-05 /about and legacy /aboutMe are different pages', async ({ page }) => {
+  // #28: legacy /aboutMe is removed, so it must render the client NotFound, not the /about page.
+  test('AC-IMP-05 /about is the approved page and removed /aboutMe is NotFound', async ({ page }) => {
     await page.goto('/about', { waitUntil: 'load' });
     await expect(page.locator('main h1')).toHaveText(APPROVED['/about'].ru.h1);
     await page.goto('/aboutMe', { waitUntil: 'load' });
-    await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
     await expect(page.getByText(APPROVED['/about'].ru.h1)).toHaveCount(0);
   });
 

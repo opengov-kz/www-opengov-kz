@@ -20,15 +20,15 @@ There is no test suite.
 
 ## Architecture
 
-- **Routing** — all routes are declared in `src/App.jsx` (`/`, `/open-government`, `/community`, `/about` (design v1.2, #26; not the legacy `/aboutMe`), `/aboutMe`, `/news`, `/projects`, `/members`, `/newsDetail`, `/projectDetail`, `/membersDetail`, `/tools`, `/tools/open-data`, `/tools/open-budgets`, `/tools/legal-acts`, plus the client catch-all `*` → `NotFoundPage`). Each page component renders its own `<Header />` and `<Footer />`; there is no shared layout route.
+- **Routing** — all routes are declared in `src/App.jsx` (`/`, `/open-government`, `/community`, `/about` (design v1.2, #26), `/projects`, `/tools`, `/tools/open-data`, `/tools/open-budgets`, `/tools/legal-acts`, plus the client catch-all `*` → `NotFoundPage`). The legacy `/aboutMe`, `/news`, `/newsDetail`, `/projectDetail`, `/members`, `/membersDetail` were removed in #28 (Q-OGK-MVP-RB-04=A) and must return HTTP 404. Each page component renders its own `<Header />` and `<Footer />`; there is no shared layout route.
 - **Vercel route allowlist** — `vercel.json` rewrites only the known routes to `/index.html`; any other URL gets the static trilingual `public/404.html` with HTTP 404. Adding or removing a route in `src/App.jsx` requires the same change in `vercel.json`; `npm run check:routes` (also run automatically before `npm run build`) fails if they diverge.
-- **Detail pages are static.** `/newsDetail`, `/projectDetail`, `/membersDetail` take no route params — every list item links to the same detail URL, and the detail content comes from the corresponding locale JSON, not from the data arrays.
-- **Page structure** — `src/pages/<page>/<page>.jsx` with a sibling `<page>.module.css`; page-specific card components live in subfolders next to the page (e.g. `pages/newsPage/newsCard1/`). Header, footer, and `scrollTop/` live directly under `src/`.
+- **No detail pages.** `/projects` cards have no detail link (Q-OGK-MVP-RB-06=B); the `link` field in `projectsData.js` is unused.
+- **Page structure** — `src/pages/<page>/<page>.jsx` with a sibling `<page>.module.css`; page-specific card components live in subfolders next to the page (e.g. `pages/projectsPage/projectsCard1/`). Header, footer, and `scrollTop/` live directly under `src/`.
 
 ### Two separate localization mechanisms
 
 1. **UI strings** — i18next namespaces, one JSON per page per language in `src/locales/{ru,kz,en}/<namespace>.json`. Every namespace is imported and registered manually in `src/i18n.js`; adding a namespace means adding three imports and three entries there. Components use `useTranslation("<namespace>")`. Default and fallback language is `ru`; the language code for Kazakh is `kz` (not `kk`). Language is switched only via `i18n.changeLanguage` in `src/header/header.jsx` and is not persisted.
-2. **List content** — `src/data/{newsData,projectsData,membersData}.js` hold arrays where each text field is an object `{ ru, kz, en }`. List pages pick the field with `i18n.language` (e.g. `item.title[lang]`). Filtering uses the language-independent `tagKey`, and the category buttons on each list page are a hard-coded array that must be kept in sync with the `tagKey` values in the data.
+2. **List content** — `src/data/projectsData.js` holds an array where each text field is an object `{ ru, kz, en }`. The list page picks the field with `i18n.language` (e.g. `item.title[lang]`). Filtering uses the language-independent `tagKey`, and the category buttons on the list page are a hard-coded array that must be kept in sync with the `tagKey` values in the data.
 
 When adding user-facing text, put it in the matching locale namespace (all three languages) or data object — don't hard-code Russian strings in JSX.
 
