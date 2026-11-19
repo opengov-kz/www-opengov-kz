@@ -16,8 +16,38 @@ description: Use for every OpenGov.kz GitHub Issue that Claude Code executes —
 
 ## 2. Входные материалы
 
-- Если есть `Evidence/Issue-N/manifest.json`, скачать критичные файлы и сверить их SHA-256 с manifest. Расхождение — блокер и промежуточный комментарий.
-- Задание пришло без Issue или без файлов, а они нужны, — применить skill `task-handoff`.
+Актуальный манифест определяется **только** по последнему комментарию Issue со строкой `Handoff-Status` (skill `task-handoff`, раздел 6). Искать «последний файл в папке» или `manifest.json` нельзя.
+
+```bash
+F=$(cat <<'EOF'
+[.[] | select(.body | test("(?m)^Handoff-Status: (Ready|Blocked)[[:space:]]*$"))] as $h
+| if ($h | length) == 0 then {state: "none"}
+  else ($h | last) as $c
+  | [$c.body | scan("(?m)^Handoff-Status: (Ready|Blocked)[[:space:]]*$")] as $s
+  | [$c.body | scan("(?m)^Handoff-Manifest: ([A-Za-z0-9_-]+) v([0-9]+) sha256:([0-9a-f]{64})[[:space:]]*$")] as $m
+  | [$h[] | select(.body | test("(?m)^Handoff-Status: Ready[[:space:]]*$")) | .body
+     | scan("(?m)^Handoff-Manifest: [A-Za-z0-9_-]+ v([0-9]+) ")[0] | tonumber] as $vers
+  | if ($s | length) != 1 then {state: "blocked", reason: "статус в комментарии не один", url: $c.url}
+    elif $s[0][0] == "Blocked" then {state: "blocked", reason: "последний статус Blocked", url: $c.url}
+    elif ($m | length) != 1 then {state: "blocked", reason: "строк Handoff-Manifest не одна", url: $c.url}
+    elif ($m[0][1] | tonumber) != ($vers | max) then {state: "blocked", reason: "версия ниже ранее объявленной", url: $c.url}
+    else {state: "ready", url: $c.url, drive_id: $m[0][0], version: ($m[0][1] | tonumber), sha256: $m[0][2]} end
+  end
+EOF
+)
+gh issue view N --json comments --jq ".comments | $F"
+```
+
+Фильтр использует `[[:space:]]`, а не `\s`: Git Bash схлопывает `\\` в аргументах `gh`.
+
+- `none` — передачи не было. Если входные файлы нужны — применить skill `task-handoff`.
+- `blocked` — блокер. Опубликовать промежуточный комментарий с причиной и `url`; входные файлы не использовать.
+- `ready`:
+  1. Скачать манифест строго по `drive_id` (`download_file_content`). `sha256sum` должен совпасть с `sha256`, в JSON — `version` и `issue`.
+  2. Проверить папку `Evidence/Issue-N/` (`title contains 'manifest-v'`): манифеста новее `version` быть не должно. Если он есть — передача не завершена или не подтверждена: `Handoff Blocked`.
+  3. Скачать критичные файлы по их `drive_id` из манифеста и сверить SHA-256 и размер.
+
+Любое расхождение — `Handoff Blocked`: промежуточный комментарий с `Handoff-Status: Blocked` и причиной. Работа с этими входными данными останавливается.
 
 ## 3. Worktree
 
@@ -48,15 +78,22 @@ git branch -a --list '*ISSUE-N*'
 
 Финальный комментарий (§8) содержит: Issue, ветку, base/head SHA, PR, diff/файлы, AC (Passed / Failed / Not Verified / N/A с обоснованием), проверки, evidence, ограничения, блокеры, статус worktree.
 
-Read-back каждого обязательного комментария:
+Публикация и read-back каждого обязательного комментария (одна команда Bash):
 
 ```bash
-URL=$(gh issue comment N --body-file report.md)
-gh api repos/opengov-kz/www-opengov-kz/issues/comments/${URL##*issuecomment-} --jq .body > readback.md
-# сравнить report.md и readback.md без учёта CRLF и хвостовых пробелов
+REPORT=/путь/к/report.md   # вне репозитория (scratchpad), в Git не коммитить (§8)
+norm() { tr -d '\r' | sed -e 's/[[:space:]]*$//' | awk 'NF{p=1} p' | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'; }
+URL=$(gh issue comment N --body-file "$REPORT"); ID=${URL##*issuecomment-}
+case $ID in ''|*[!0-9]*) echo "PUBLISH FAILED: '$URL'";; *)
+  A=$(norm < "$REPORT" | sha256sum | cut -c1-64)
+  B=$(gh api "repos/opengov-kz/www-opengov-kz/issues/comments/$ID" --jq .body | norm | sha256sum | cut -c1-64)
+  [ "$A" = "$B" ] && echo "READ-BACK OK $URL" || echo "READ-BACK FAILED $URL";; esac
 ```
 
-Файл отчёта держать вне репозитория (scratchpad), в Git не коммитить (§8).
+- Сравнение идёт без учёта CRLF, хвостовых пробелов и пустых строк в начале и конце.
+- `READ-BACK OK` — публикация подтверждена.
+- `PUBLISH FAILED` — комментарий не создан: не повторять вслепую, сначала `gh issue view N --comments`, чтобы не создать дубль.
+- `READ-BACK FAILED` — текст в GitHub отличается: сообщить и не считать отчёт опубликованным.
 
 ## 6. Завершение ветки (`superpowers:finishing-a-development-branch`)
 
