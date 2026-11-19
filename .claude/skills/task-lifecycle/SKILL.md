@@ -20,16 +20,16 @@ description: Use for every OpenGov.kz GitHub Issue that Claude Code executes —
 
 ```bash
 F=$(cat <<'EOF'
-[.[] | select(.body | test("(?m)^Handoff-Status: (Ready|Blocked)[[:space:]]*$"))] as $h
+[.[] | select(.body | test("^Handoff-Status: (Ready|Blocked)([[:space:]]|$)"))] as $h
 | if ($h | length) == 0 then {state: "none"}
   else ($h | last) as $c
-  | [$c.body | scan("(?m)^Handoff-Status: (Ready|Blocked)[[:space:]]*$")] as $s
-  | [$c.body | scan("(?m)^Handoff-Manifest: ([A-Za-z0-9_-]+) v([0-9]+) sha256:([0-9a-f]{64})[[:space:]]*$")] as $m
-  | [$h[] | select(.body | test("(?m)^Handoff-Status: Ready[[:space:]]*$")) | .body
-     | scan("(?m)^Handoff-Manifest: [A-Za-z0-9_-]+ v([0-9]+) ")[0] | tonumber] as $vers
-  | if ($s | length) != 1 then {state: "blocked", reason: "статус в комментарии не один", url: $c.url}
-    elif $s[0][0] == "Blocked" then {state: "blocked", reason: "последний статус Blocked", url: $c.url}
-    elif ($m | length) != 1 then {state: "blocked", reason: "строк Handoff-Manifest не одна", url: $c.url}
+  | ([$c.body | scan("(?m)^Handoff-Status:")] | length) as $ns
+  | ([$c.body | scan("(?m)^Handoff-Manifest:")] | length) as $nm
+  | [$c.body | scan("^Handoff-Status: Ready[[:space:]]+Handoff-Manifest: ([A-Za-z0-9_-]+) v([0-9]+) sha256:([0-9a-f]{64})([[:space:]]|$)")] as $m
+  | [$h[] | .body | scan("^Handoff-Status: Ready[[:space:]]+Handoff-Manifest: [A-Za-z0-9_-]+ v([0-9]+) ")[0] | tonumber] as $vers
+  | if $ns != 1 then {state: "blocked", reason: "статус в комментарии не один", url: $c.url}
+    elif ($c.body | test("^Handoff-Status: Blocked")) then {state: "blocked", reason: "последний статус Blocked", url: $c.url}
+    elif $nm != 1 or ($m | length) != 1 then {state: "blocked", reason: "нет единственной строки Handoff-Manifest сразу после статуса", url: $c.url}
     elif ($m[0][1] | tonumber) != ($vers | max) then {state: "blocked", reason: "версия ниже ранее объявленной", url: $c.url}
     else {state: "ready", url: $c.url, drive_id: $m[0][0], version: ($m[0][1] | tonumber), sha256: $m[0][2]} end
   end
@@ -38,7 +38,7 @@ EOF
 gh issue view N --json comments --jq ".comments | $F"
 ```
 
-Фильтр использует `[[:space:]]`, а не `\s`: Git Bash схлопывает `\\` в аргументах `gh`.
+Учитываются только комментарии, которые **начинаются** со строки `Handoff-Status`. Примеры формата внутри текста или блоков кода игнорируются. Фильтр использует `[[:space:]]`, а не `\s`: Git Bash схлопывает `\\` в аргументах `gh`.
 
 - `none` — передачи не было. Если входные файлы нужны — применить skill `task-handoff`.
 - `blocked` — блокер. Опубликовать промежуточный комментарий с причиной и `url`; входные файлы не использовать.
