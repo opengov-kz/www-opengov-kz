@@ -1,122 +1,44 @@
-import { useState } from "react";
-import styles from "./projectsPage.module.css";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Header from "../../header/header";
 import Footer from "../../footer/footer";
-import ProjectsCard1 from "./projectsCard1/projectsCard1";
-import projectsData from "../../data/projectsData";
-import { useTranslation } from "react-i18next";
+import Hero from "../../ui/hero";
+import usePageMeta from "../../usePageMeta";
+import s from "../../ui/page.module.css";
 
+// /projects «Направления работы» (#14): Approved RU/KK/EN + SEO Q-OGK-PROJECTS-ED-03-01=A, FR-PROJ-01…04.
+// No OG/mock cards (Q-OGK-PROJECTS-PUB-02=A); projectsData.js and projectsCard1/ are kept but not rendered (K5=A).
 function ProjectsPage() {
-    const { t, i18n } = useTranslation("projectsPage");
-    const lang = i18n.language;
-
-    const itemsPerPage = 6;
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-
-    // Фильтрация
-    const filteredProjects = projectsData.filter((project) => {
-        const title = project.title?.[lang]?.toLowerCase() || "";
-        const description = project.description?.[lang]?.toLowerCase() || "";
-        const tagKey = project.tagKey;
-
-        const matchesSearch =
-            title.includes(searchTerm.toLowerCase()) ||
-            description.includes(searchTerm.toLowerCase());
-
-        const matchesCategory = selectedCategory
-            ? selectedCategory === tagKey
-            : true;
-
-        return matchesSearch && matchesCategory;
-    });
-
-    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProjects = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
-
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
-        setCurrentPage(1);
-    };
-
-    const handleCategoryChange = (key) => {
-        setSelectedCategory(key);
-        setCurrentPage(1);
-    };
-
-    const categoryList = ["finance", "ecology", "transport"];
+    const { t } = useTranslation("projectsPage");
+    usePageMeta(t("seoTitle"), t("seoDescription"));
 
     return (
         <>
             <Header />
-            <div className={styles.first_block}>
-                <div className={styles.first_block_inner}>
-                    <div className={styles.title}>{t("title")}</div>
-                    <div className={styles.description}>{t("description1")}</div>
-                    <div className={styles.description}>{t("description2")}</div>
-                </div>
-            </div>
+            <main className={s.page}>
+                <Hero title={t("hero.title")} art="◈">
+                    <p className={s.lead}>{t("hero.lead")}</p>
+                    <p className={s.lead}>{t("hero.about")}</p>
+                </Hero>
 
-            <div className={styles.second_block}>
-                <div className={styles.second_block_inner}>
-                    <input
-                        type="text"
-                        placeholder={t("searchPlaceholder")}
-                        className={styles.searchInput}
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
-
-                    <div className={styles.filters}>
-                        {categoryList.map((key) => (
-                            <button
-                                key={key}
-                                className={styles.filterButton}
-                                onClick={() => handleCategoryChange(key)}
-                            >
-                                {t(`categories.${key}`)}
-                            </button>
-                        ))}
-                        <button
-                            className={styles.filterButton}
-                            onClick={() => handleCategoryChange("")}
-                        >
-                            {t("categories.all")}
-                        </button>
+                <section>
+                    <div className={s.wrap}>
+                        <ul className={s.grid}>
+                            {t("areas", { returnObjects: true }).map((area) => (
+                                <li key={area.title} className={s.card}>
+                                    <h2>{area.title}</h2>
+                                    <p>{area.text}</p>
+                                </li>
+                            ))}
+                        </ul>
+                        <p className={s.section_note}>{t("note")}</p>
+                        <div className={s.next_steps}>
+                            <p>{t("cta.question")}</p>
+                            <Link className={`${s.btn} ${s.secondary}`} to="/community">{t("cta.link")}</Link>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div className={styles.third_block}>
-                <div className={styles.third_block_inner}>
-                    <div className={styles.cards}>
-                        {currentProjects.map((project, index) => (
-                            <ProjectsCard1
-                                key={index}
-                                imgSrc={project.imgSrc}
-                                title={project.title[lang]}
-                                description={project.description[lang]}
-                                date={project.date[lang]}
-                                tag={project.tag[lang]}
-                                link={project.link}
-                            />
-                        ))}
-                    </div>
-                    <div className={styles.pagination}>
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <button
-                                key={i}
-                                className={`${styles.pageButton} ${currentPage === i + 1 ? styles.active : ""}`}
-                                onClick={() => setCurrentPage(i + 1)}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
+                </section>
+            </main>
             <Footer />
         </>
     );

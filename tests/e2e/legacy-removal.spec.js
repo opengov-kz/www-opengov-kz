@@ -1,5 +1,5 @@
-// Issue #28: six legacy routes removed (Q-OGK-MVP-RB-04=A), "Подробнее" removed from /projects cards
-// (Q-OGK-MVP-RB-06=B). Locally `vite preview` answers every path with index.html (200), so the client
+// Issue #28: six legacy routes removed (Q-OGK-MVP-RB-04=A). AC-11 checks /projects as the Approved
+// «Areas of work» page of #14 (the former mock cards and their "Подробнее" link are gone). Locally `vite preview` answers every path with index.html (200), so the client
 // NotFound is asserted in the browser and server 404 on vercel.json; with PW_BASE_URL (Vercel) AC-01
 // asserts the real HTTP 404 static page instead (F-08, helpers.expectNotFound).
 import { readFileSync } from 'node:fs';
@@ -26,22 +26,27 @@ test.describe('@regression #28 legacy removal', () => {
     }
   }
 
+  // #14 (K1=A): /projects is the Approved «Areas of work» page (AC-PROJ-01/03/04/05), replacing the 18 mock cards.
   for (const locale of LOCALES) {
-    test(`AC-11 /projects [${locale.key}] 18 cards, no "${projectsText(locale.key).more}" and no detail link`, async ({ page }) => {
+    test(`AC-11 /projects [${locale.key}] Approved areas of work, no mock cards, search, filters or detail link`, async ({ page }) => {
+      const copy = projectsText(locale.key);
       await page.goto('/projects', { waitUntil: 'load' });
       await setLocale(page, locale);
-      const pages = page.locator('#root button').filter({ hasText: /^\d+$/ });
-      await expect(pages).toHaveCount(3);
-      let cards = 0;
-      for (let p = 1; p <= 3; p++) {
-        await pages.filter({ hasText: new RegExp(`^${p}$`) }).click();
-        const images = page.locator('img[src^="/pp_Card"]');
-        await expect(images.first()).toBeVisible();
-        cards += await images.count();
-        await expect(page.locator('a[href="/projectDetail"]'), 'link to removed /projectDetail').toHaveCount(0);
-        await expect(page.getByText(projectsText(locale.key).more, { exact: true }), 'dead CTA').toHaveCount(0);
-      }
-      expect(cards).toBe(18);
+      const main = page.locator('main');
+      await expect(main.locator('h1')).toHaveText(copy.hero.title);
+      await expect(main.getByText(copy.hero.lead, { exact: true })).toBeVisible();
+      await expect(main.getByText(copy.hero.about, { exact: true })).toBeVisible();
+      await expect(main.locator('h2')).toHaveText(copy.areas.map((area) => area.title));
+      for (const area of copy.areas) await expect(main.getByText(area.text, { exact: true })).toBeVisible();
+      await expect(main.getByText(copy.note, { exact: true })).toBeVisible();
+      await expect(main.getByText(copy.cta.question, { exact: true })).toBeVisible();
+      await expect(main.getByRole('link', { name: copy.cta.link, exact: true })).toHaveAttribute('href', '/community');
+      await expect(page).toHaveTitle(copy.seoTitle);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', copy.seoDescription);
+      await expect(page.locator('img[src^="/pp_Card"]'), 'mock project cards').toHaveCount(0);
+      await expect(main.locator('input, button, a[href^="mailto:"]'), 'search, filters, pagination, email CTA').toHaveCount(0);
+      await expect(page.locator('a[href="/projectDetail"]'), 'link to removed /projectDetail').toHaveCount(0);
+      await expect(page.locator('header nav a[href="/projects"]'), 'no «Projects» menu item').toHaveCount(0);
     });
   }
 });
