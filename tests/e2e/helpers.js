@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
-// The 9 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + preserved legacy /projects (#14).
+// The 9 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + /projects «Areas of work» (#14, not in the menu).
 export const MVP_ROUTES = ['/', '/open-government', '/tools', '/tools/open-data', '/tools/open-budgets',
   '/tools/legal-acts', '/community', '/about'];
 export const LEGACY_ROUTES = ['/projects'];

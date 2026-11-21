@@ -1,16 +1,28 @@
 {
-    "title": "Projects",
-    "description1": "Open data is a powerful tool for change. Here you will find projects that use government data to create new services, increase transparency, and improve citizens' lives.",
-    "description2": "Explore the projects, join initiatives, or share your own ideas!",
-    "searchPlaceholder": "Search projects",
-    "categories": {
-        "finance": "Finance",
-        "ecology": "Ecology",
-        "transport": "Transport",
-        "healthcare": "Healthcare",
-        "education": "Education",
-        "urbanism": "Urbanism",
-        "all": "All categories"
+    "seoTitle": "Areas of Work — OpenGov.kz",
+    "seoDescription": "Explore OpenGov.kz's areas of work in Kazakhstan: open data, public participation, and government transparency. An independent civic initiative.",
+    "hero": {
+        "title": "Areas of Work",
+        "lead": "Open government grows stronger when people can access information, participate in decisions, and scrutinize the work of public authorities.",
+        "about": "OpenGov.kz is an independent civic initiative. We aim to bring together people and experts who want government information to be accessible, decisions to be understandable, and public participation to be meaningful."
     },
-    "more": "Learn more"
+    "areas": [
+        {
+            "title": "Open Data",
+            "text": "Explore the accessibility and quality of government data, discuss which datasets are most useful to society and businesses, and propose ways to put them to practical use."
+        },
+        {
+            "title": "Public Participation",
+            "text": "Examine how public consultations and proposal mechanisms work, and what conditions enable people to influence decisions."
+        },
+        {
+            "title": "Government Transparency",
+            "text": "Consider how easily information about public authorities can be found and used, and discuss approaches to assessing openness."
+        }
+    ],
+    "note": "These are potential areas for collaboration, not a list of completed studies or published projects.",
+    "cta": {
+        "question": "Want to get involved?",
+        "link": "Find out how to join the initiative."
+    }
 }
