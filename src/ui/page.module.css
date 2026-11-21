@@ -64,6 +64,32 @@
     min-width: 0;
 }
 
+/* Text + Human Civic illustration (#38, F-05=A starting grid); single column at 800px like .hero_grid. */
+.split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.split > * {
+    min-width: 0;
+}
+
+/* Candidate B (#38 A/B, Q-OGK-HC-REV38-01=A): Hero only, two-column widths; join and <=800px unchanged. */
+@media (min-width: 801px) {
+    .hero_grid.split {
+        grid-template-columns: 1.15fr .85fr;
+    }
+}
+
+.illustration img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+}
+
 .eyebrow {
     font-weight: 800;
     letter-spacing: .09em;
@@ -242,7 +268,8 @@ p + .grid {
         padding: 50px 0;
     }
 
-    .hero_grid {
+    .hero_grid,
+    .split {
         grid-template-columns: 1fr;
     }
 
