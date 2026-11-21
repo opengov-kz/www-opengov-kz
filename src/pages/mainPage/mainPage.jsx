@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Header from '../../header/header';
 import Footer from '../../footer/footer';
 import Hero from '../../ui/hero';
+import Illustration from '../../ui/illustration';
 import usePageMeta from '../../usePageMeta';
 import s from '../../ui/page.module.css';
 
@@ -16,7 +17,7 @@ function MainPage() {
         <>
             <Header />
             <main className={s.page}>
-                <Hero title={t('hero.title')} art="◈">
+                <Hero title={t('hero.title')} image="hero-home">
                     <p className={s.lead}>{t('hero.questions')}</p>
                     <p className={s.lead}>{t('hero.intro')}</p>
                     <div className={s.actions}>
@@ -56,11 +57,14 @@ function MainPage() {
                 </section>
 
                 <section>
-                    <div className={s.wrap}>
-                        <h2>{t('participate.title')}</h2>
-                        <p>{t('participate.p1')}</p>
-                        <p>{t('participate.p2')}</p>
-                        <Link className={`${s.btn} ${s.secondary} ${s.section_cta}`} to="/community">{t('participate.cta')}</Link>
+                    <div className={`${s.wrap} ${s.split}`}>
+                        <div>
+                            <h2>{t('participate.title')}</h2>
+                            <p>{t('participate.p1')}</p>
+                            <p>{t('participate.p2')}</p>
+                            <Link className={`${s.btn} ${s.secondary} ${s.section_cta}`} to="/community">{t('participate.cta')}</Link>
+                        </div>
+                        <Illustration name="join" />
                     </div>
                 </section>
 
