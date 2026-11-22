@@ -20,16 +20,20 @@ const ITEMS = {
 // Rendered width: full column up to 800px (16px/24px gutters), then half of the 1160px wrap (1fr/1fr, 30px gap).
 const SIZES = '(max-width: 560px) calc(100vw - 32px), (max-width: 800px) calc(100vw - 48px), '
     + '(max-width: 1160px) calc(50vw - 39px), 541px';
+// Panorama (#42, A2L-S): full-bleed scene up to 560px, content width up to 1008px, then capped at 960px.
+const PANORAMA_SIZES = '(max-width: 560px) 100vw, (max-width: 1008px) calc(100vw - 48px), 960px';
 
-function Illustration({ name, priority = false }) {
+function Illustration({ name, priority = false, layout }) {
     const it = ITEMS[name];
+    const panorama = layout === 'panorama';
+    const sizes = panorama ? PANORAMA_SIZES : SIZES;
     return (
-        <picture className={s.illustration}>
+        <picture className={panorama ? s.panorama : s.illustration}>
             {it.mobile && (
-                <source media="(max-width: 560px)" sizes={SIZES} srcSet={it.mobile} width={it.width} height={it.height} />
+                <source media="(max-width: 560px)" sizes={sizes} srcSet={it.mobile} width={it.width} height={it.height} />
             )}
             <img
-                sizes={SIZES}
+                sizes={sizes}
                 srcSet={it.desktop}
                 src={`/illustrations/${it.file}-1200w.webp`}
                 width={it.width}

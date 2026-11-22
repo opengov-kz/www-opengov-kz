@@ -310,3 +310,90 @@ p + .grid {
         font-size: 34px;
     }
 }
+
+/* Hero A2L-S panorama (#42, Q-OGK-HC-V2-DEC-01=A, Q-INT-01/02=A), opt-in for /community and /about only.
+   Reference: Issue #33 prototype-delta/{community,about}/index-a2ls.html (V2-P + A2L + A2L-S). Own classes, so the
+   split Hero of /, the join section and the art Hero of the other routes keep their computed styles. */
+.hero.hero_panorama {
+    padding: 64px 0 72px;
+}
+
+/* H1 | lead row; top-aligned so a long lead never leaves a gap above the H1. */
+.intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 48px;
+    align-items: start;
+}
+
+.intro > h1 {
+    margin-bottom: 0;
+}
+
+.intro .lead {
+    font-size: 18px;
+}
+
+.intro .lead:first-child {
+    margin-top: .4em; /* optical alignment with the H1 cap height */
+}
+
+/* The whole 2:1 scene below the row: native ratio, no crop, capped at 960px and aligned with the H1. */
+.panorama {
+    display: block;
+    margin-top: 44px;
+}
+
+.panorama img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+@media (min-width: 561px) {
+    .panorama {
+        max-width: 960px;
+        margin-inline: 0 auto;
+    }
+}
+
+@media (min-width: 1009px) {
+    .hero.hero_panorama {
+        padding-top: 40px;
+    }
+
+    .panorama {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 800px) {
+    .hero.hero_panorama {
+        padding: 40px 0 48px;
+    }
+
+    .intro {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .panorama {
+        margin-top: 32px;
+    }
+}
+
+/* Mobile: the scene runs edge to edge instead of sitting inside the 16px gutters. */
+@media (max-width: 560px) {
+    .intro .lead {
+        font-size: 17px;
+    }
+
+    .panorama {
+        margin-inline: -16px;
+    }
+
+    .panorama img {
+        border-radius: 0;
+    }
+}
