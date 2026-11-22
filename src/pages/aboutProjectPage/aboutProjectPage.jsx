@@ -17,7 +17,7 @@ function AboutProjectPage() {
         <>
             <Header />
             <main className={s.page}>
-                <Hero title={t('hero.title')} image="hero-about">
+                <Hero title={t('hero.title')} image="hero-about" layout="panorama">
                     <p className={s.lead}>{t('hero.p1')}</p>
                     <p className={s.lead}>{t('hero.p2')}</p>
                 </Hero>

@@ -58,8 +58,12 @@ test.describe('@human-civic #38', () => {
           const lh = await page.locator('main h1').evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
           const lines = Math.round(h1.height / lh);
           const cols = await hero.locator(':scope > div').evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').map(parseFloat));
-          if (width > 800) {
-            // Q-OGK-HC-GRID-38=A: grid B 1.15fr / 0.85fr (minus the 30px gap) on the three Human Civic heroes.
+          if (route !== '/') {
+            // #42 (Q-OGK-HC-V2-DEC-01=A, Q-INT-01=A): /community and /about replace grid B with the A2L-S panorama
+            // on every width; the exact A2L-S geometry is checked in a2ls.spec.js. Grid B below stays for / only.
+            expect.soft(m.top, `${label}: panorama after the H1/lead row`).toBeGreaterThan(h1.y + h1.height);
+          } else if (width > 800) {
+            // Q-OGK-HC-GRID-38=A: grid B 1.15fr / 0.85fr (minus the 30px gap) on the home Human Civic hero.
             expect.soft(cols.length, `${label}: two columns`).toBe(2);
             expect.soft(Math.abs(cols[0] / cols[1] - 1.15 / 0.85), `${label}: grid B ratio`).toBeLessThan(0.01);
             expect.soft(m.x, `${label}: image in the second column`).toBeGreaterThanOrEqual(h1.x + 1);
