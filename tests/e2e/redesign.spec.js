@@ -74,26 +74,32 @@ test.describe('@redesign', () => {
     await expect(page.locator('header nav a[aria-current="page"]')).toHaveCount(0);
   });
 
-  // Issue #40 AC-01: «Tools» is the current page on /tools and the current section (aria-current="true") on its child pages.
+  // Issue #40 AC-01 / BA40-01: on every route each header nav item has exactly the expected aria-current
+  // ("page" on its own page, "true" for Tools on /tools/*, none otherwise), and only a marked item is highlighted.
+  const BLUE = 'rgb(36, 99, 207)'; // --og-blue
+  const NAVY = 'rgb(20, 44, 70)'; // --og-navy
+  const expectedCurrent = (route, href) =>
+    route === href ? 'page' : href === '/tools' && route.startsWith('/tools/') ? 'true' : null;
   for (const locale of LOCALES) {
-    test(`#40 AC-01 tools nav item aria-current on /tools and child pages [${locale.key}]`, async ({ page }, testInfo) => {
-      const tools = page.locator('header nav a[href="/tools"]');
-      const marked = page.locator('header nav a[aria-current]');
-      for (const route of ['/tools', '/tools/open-data', '/tools/open-budgets', '/tools/legal-acts']) {
+    test(`#40 AC-01 header nav aria-current and highlight on every route [${locale.key}]`, async ({ page }, testInfo) => {
+      for (const route of [...MVP_ROUTES, '/projects', '/pw-e2e-unknown-route']) {
         await page.goto(route, { waitUntil: 'load' });
         await setLocale(page, locale);
-        await expect(marked).toHaveCount(1);
-        await expect(tools).toHaveAttribute('aria-current', route === '/tools' ? 'page' : 'true');
-        await expect(tools).toHaveCSS('border-bottom-color', 'rgb(36, 99, 207)');
-        await expect(tools).toHaveCSS('color', 'rgb(36, 99, 207)');
-        if (locale.key === 'ru' && route !== '/tools/open-budgets' && route !== '/tools/legal-acts') {
-          await page.locator('header').screenshot({ path: testInfo.outputPath(`header${route.replace(/\//g, '-')}-${testInfo.project.name}.png`) });
+        await page.mouse.move(0, 0); // no hover colour on nav links
+        for (const href of HEADER_LINKS) {
+          const link = page.locator(`header nav a[href="${href}"]`);
+          const want = expectedCurrent(route, href);
+          const where = `${route} → ${href}`;
+          if (want) await expect(link, where).toHaveAttribute('aria-current', want);
+          else expect(await link.getAttribute('aria-current'), where).toBeNull();
+          await expect(link, where).toHaveCSS('color', want ? BLUE : NAVY);
+          await expect(link, where).toHaveCSS('border-bottom-color', want ? BLUE : 'rgba(0, 0, 0, 0)');
         }
-      }
-      for (const route of MVP_ROUTES.filter((r) => !r.startsWith('/tools'))) {
-        await page.goto(route, { waitUntil: 'load' });
-        await setLocale(page, locale);
-        await expect(tools).not.toHaveAttribute('aria-current', /.*/);
+        await expect(page.locator('header [aria-current]'), route).toHaveCount(HEADER_LINKS.some((h) => expectedCurrent(route, h)) ? 1 : 0);
+        if (locale.key === 'ru' && ['/tools', '/tools/open-data', '/about', '/'].includes(route)) {
+          const name = route === '/' ? 'home' : route.slice(1).replace(/\//g, '-');
+          await page.locator('header').screenshot({ path: testInfo.outputPath(`header-${name}-${testInfo.project.name}.png`) });
+        }
       }
     });
   }

@@ -1,9 +1,10 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import styles from './header.module.css';
 
 // v1.2 navigation (Sitemap MVP): four sections; on narrow screens it wraps onto a second row (Q-OGK-DESIGN-11=A), no burger.
-// section: the item also stays active on child pages, marked aria-current="true" there instead of a false "page" (#40 AC-01).
+// aria-current is set explicitly per item and drives the active style: "page" on the item's own page; for a section
+// item (Tools) "true" on its child pages instead of a false "page" (#40 AC-01); no attribute on any other item.
 const NAV = [
   { to: '/open-government', key: 'openGovernment' },
   { to: '/tools', key: 'tools', section: true },
@@ -19,7 +20,8 @@ const LANGS = [
 
 function Header() {
   const { t, i18n } = useTranslation('header');
-  const { pathname } = useLocation();
+  const path = useLocation().pathname.replace(/(.)\/+$/, '$1'); // '/tools/' is the same page as '/tools'
+  const current = (to, section) => (path === to ? 'page' : section && path.startsWith(`${to}/`) ? 'true' : undefined);
 
   return (
     <header className={styles.top}>
@@ -28,7 +30,7 @@ function Header() {
 
         <nav aria-label={t('navLabel')} className={styles.nav}>
           {NAV.map(({ to, key, section }) => (
-            <NavLink key={to} to={to} end={!section} aria-current={pathname === to ? 'page' : 'true'}>{t(key)}</NavLink>
+            <Link key={to} to={to} aria-current={current(to, section)}>{t(key)}</Link>
           ))}
         </nav>
 
