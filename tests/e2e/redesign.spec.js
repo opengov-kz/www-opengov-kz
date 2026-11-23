@@ -3,7 +3,7 @@
 // keyboard focus, /about vs removed /aboutMe (#28).
 import { expect, test } from '@playwright/test';
 import { APPROVED, DISCLAIMER } from './approved-copy.js';
-import { HEADER_LINKS, LOCALES, MVP_ROUTES, note, overflow, setLocale } from './helpers.js';
+import { HEADER_LINKS, LOCALES, MVP_ROUTES, UNKNOWN_ROUTE, isServerNotFound, note, overflow, setLocale } from './helpers.js';
 
 const WIDTHS = [320, 375, 390, 768, 1024, 1440];
 const desktopOnly = (testInfo) => test.skip(testInfo.project.name !== 'desktop-1440', 'viewport matrix runs once, in desktop project');
@@ -82,7 +82,18 @@ test.describe('@redesign', () => {
     route === href ? 'page' : href === '/tools' && route.startsWith('/tools/') ? 'true' : null;
   for (const locale of LOCALES) {
     test(`#40 AC-01 header nav aria-current and highlight on every route [${locale.key}]`, async ({ page }, testInfo) => {
-      for (const route of [...MVP_ROUTES, '/projects', '/pw-e2e-unknown-route']) {
+      for (const route of [...MVP_ROUTES, '/projects', UNKNOWN_ROUTE]) {
+        // F-40-PM-01: on a deployment an unknown path is the static HTTP 404 page (no React, no header), so it can
+        // carry no aria-current; locally it is the client NotFound with the header, checked like any other route.
+        if (isServerNotFound(route)) {
+          const response = await page.goto(route, { waitUntil: 'load' });
+          expect(response.status(), `${route} server HTTP status`).toBe(404);
+          await expect(page.locator('#root'), `${route} React must not render`).toHaveCount(0);
+          await expect(page.locator('header'), `${route} no header on the static 404`).toHaveCount(0);
+          await expect(page.locator('[aria-current]'), `${route} no aria-current on the static 404`).toHaveCount(0);
+          note('F-40-PM-01', `${route}: HTTP ${response.status()}, static 404 without header or aria-current`);
+          continue;
+        }
         await page.goto(route, { waitUntil: 'load' });
         await setLocale(page, locale);
         await page.mouse.move(0, 0); // no hover colour on nav links
