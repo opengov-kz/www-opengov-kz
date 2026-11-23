@@ -1,11 +1,12 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import styles from './header.module.css';
 
 // v1.2 navigation (Sitemap MVP): four sections; on narrow screens it wraps onto a second row (Q-OGK-DESIGN-11=A), no burger.
+// section: the item also stays active on child pages, marked aria-current="true" there instead of a false "page" (#40 AC-01).
 const NAV = [
   { to: '/open-government', key: 'openGovernment' },
-  { to: '/tools', key: 'tools' },
+  { to: '/tools', key: 'tools', section: true },
   { to: '/community', key: 'community' },
   { to: '/about', key: 'aboutProject' },
 ];
@@ -18,6 +19,7 @@ const LANGS = [
 
 function Header() {
   const { t, i18n } = useTranslation('header');
+  const { pathname } = useLocation();
 
   return (
     <header className={styles.top}>
@@ -25,8 +27,8 @@ function Header() {
         <Link className={styles.logo} to="/">OpenGov.kz</Link>
 
         <nav aria-label={t('navLabel')} className={styles.nav}>
-          {NAV.map(({ to, key }) => (
-            <NavLink key={to} to={to} end>{t(key)}</NavLink>
+          {NAV.map(({ to, key, section }) => (
+            <NavLink key={to} to={to} end={!section} aria-current={pathname === to ? 'page' : 'true'}>{t(key)}</NavLink>
           ))}
         </nav>
 

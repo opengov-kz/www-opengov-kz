@@ -74,6 +74,46 @@ test.describe('@redesign', () => {
     await expect(page.locator('header nav a[aria-current="page"]')).toHaveCount(0);
   });
 
+  // Issue #40 AC-01: «Tools» is the current page on /tools and the current section (aria-current="true") on its child pages.
+  for (const locale of LOCALES) {
+    test(`#40 AC-01 tools nav item aria-current on /tools and child pages [${locale.key}]`, async ({ page }, testInfo) => {
+      const tools = page.locator('header nav a[href="/tools"]');
+      const marked = page.locator('header nav a[aria-current]');
+      for (const route of ['/tools', '/tools/open-data', '/tools/open-budgets', '/tools/legal-acts']) {
+        await page.goto(route, { waitUntil: 'load' });
+        await setLocale(page, locale);
+        await expect(marked).toHaveCount(1);
+        await expect(tools).toHaveAttribute('aria-current', route === '/tools' ? 'page' : 'true');
+        await expect(tools).toHaveCSS('border-bottom-color', 'rgb(36, 99, 207)');
+        await expect(tools).toHaveCSS('color', 'rgb(36, 99, 207)');
+        if (locale.key === 'ru' && route !== '/tools/open-budgets' && route !== '/tools/legal-acts') {
+          await page.locator('header').screenshot({ path: testInfo.outputPath(`header${route.replace(/\//g, '-')}-${testInfo.project.name}.png`) });
+        }
+      }
+      for (const route of MVP_ROUTES.filter((r) => !r.startsWith('/tools'))) {
+        await page.goto(route, { waitUntil: 'load' });
+        await setLocale(page, locale);
+        await expect(tools).not.toHaveAttribute('aria-current', /.*/);
+      }
+    });
+  }
+
+  // Issue #40 AC-03: favicon from the existing ◩ mark, linked from the SPA shell and the static 404 page.
+  test('#40 AC-03 favicon.svg and favicon.ico are linked and served', async ({ page, request }) => {
+    for (const [path, type] of [['/favicon.svg', 'image/svg+xml'], ['/favicon.ico', 'image/']]) {
+      const res = await request.get(path);
+      expect(res.status(), path).toBe(200);
+      expect(res.headers()['content-type'] ?? '', path).toContain(type);
+      note('favicon', `${path} ${res.status()} ${res.headers()['content-type']} ${(await res.body()).length} B`);
+    }
+    await page.goto('/', { waitUntil: 'load' });
+    await expect(page.locator('head link[rel="icon"][href="/favicon.svg"][type="image/svg+xml"]')).toHaveCount(1);
+    await expect(page.locator('head link[rel="icon"][href="/favicon.ico"]')).toHaveCount(1);
+    const static404 = await (await request.get('/404.html')).text();
+    expect(static404).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml" />');
+    expect(static404).toContain('<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />');
+  });
+
   test('AC-IMP-02 keyboard: every focus stop on the eight routes shows a focus indicator', async ({ page }, testInfo) => {
     desktopOnly(testInfo);
     const missing = [];
