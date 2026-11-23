@@ -54,7 +54,7 @@ body {
   color: var(--og-blue);
 }
 
-.nav a[aria-current='page'] {
+.nav a[aria-current] {
   color: var(--og-blue);
   border-bottom-color: var(--og-blue);
 }

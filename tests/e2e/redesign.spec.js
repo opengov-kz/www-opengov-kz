@@ -74,6 +74,52 @@ test.describe('@redesign', () => {
     await expect(page.locator('header nav a[aria-current="page"]')).toHaveCount(0);
   });
 
+  // Issue #40 AC-01 / BA40-01: on every route each header nav item has exactly the expected aria-current
+  // ("page" on its own page, "true" for Tools on /tools/*, none otherwise), and only a marked item is highlighted.
+  const BLUE = 'rgb(36, 99, 207)'; // --og-blue
+  const NAVY = 'rgb(20, 44, 70)'; // --og-navy
+  const expectedCurrent = (route, href) =>
+    route === href ? 'page' : href === '/tools' && route.startsWith('/tools/') ? 'true' : null;
+  for (const locale of LOCALES) {
+    test(`#40 AC-01 header nav aria-current and highlight on every route [${locale.key}]`, async ({ page }, testInfo) => {
+      for (const route of [...MVP_ROUTES, '/projects', '/pw-e2e-unknown-route']) {
+        await page.goto(route, { waitUntil: 'load' });
+        await setLocale(page, locale);
+        await page.mouse.move(0, 0); // no hover colour on nav links
+        for (const href of HEADER_LINKS) {
+          const link = page.locator(`header nav a[href="${href}"]`);
+          const want = expectedCurrent(route, href);
+          const where = `${route} → ${href}`;
+          if (want) await expect(link, where).toHaveAttribute('aria-current', want);
+          else expect(await link.getAttribute('aria-current'), where).toBeNull();
+          await expect(link, where).toHaveCSS('color', want ? BLUE : NAVY);
+          await expect(link, where).toHaveCSS('border-bottom-color', want ? BLUE : 'rgba(0, 0, 0, 0)');
+        }
+        await expect(page.locator('header [aria-current]'), route).toHaveCount(HEADER_LINKS.some((h) => expectedCurrent(route, h)) ? 1 : 0);
+        if (locale.key === 'ru' && ['/tools', '/tools/open-data', '/about', '/'].includes(route)) {
+          const name = route === '/' ? 'home' : route.slice(1).replace(/\//g, '-');
+          await page.locator('header').screenshot({ path: testInfo.outputPath(`header-${name}-${testInfo.project.name}.png`) });
+        }
+      }
+    });
+  }
+
+  // Issue #40 AC-03: favicon from the existing ◩ mark, linked from the SPA shell and the static 404 page.
+  test('#40 AC-03 favicon.svg and favicon.ico are linked and served', async ({ page, request }) => {
+    for (const [path, type] of [['/favicon.svg', 'image/svg+xml'], ['/favicon.ico', 'image/']]) {
+      const res = await request.get(path);
+      expect(res.status(), path).toBe(200);
+      expect(res.headers()['content-type'] ?? '', path).toContain(type);
+      note('favicon', `${path} ${res.status()} ${res.headers()['content-type']} ${(await res.body()).length} B`);
+    }
+    await page.goto('/', { waitUntil: 'load' });
+    await expect(page.locator('head link[rel="icon"][href="/favicon.svg"][type="image/svg+xml"]')).toHaveCount(1);
+    await expect(page.locator('head link[rel="icon"][href="/favicon.ico"]')).toHaveCount(1);
+    const static404 = await (await request.get('/404.html')).text();
+    expect(static404).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml" />');
+    expect(static404).toContain('<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />');
+  });
+
   test('AC-IMP-02 keyboard: every focus stop on the eight routes shows a focus indicator', async ({ page }, testInfo) => {
     desktopOnly(testInfo);
     const missing = [];
