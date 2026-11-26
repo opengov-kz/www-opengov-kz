@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import Link from '../ui/link';
 import styles from './footer.module.css';
 
 // v1.2 footer: only working internal links and the approved independence disclaimer; no subscription form or unverified contacts.

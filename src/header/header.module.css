@@ -68,7 +68,8 @@ body {
   white-space: nowrap;
 }
 
-.lang button {
+.lang button,
+.lang a {
   padding: 4px 11px;
   min-height: 28px;
   border-radius: 999px;
@@ -76,11 +77,21 @@ body {
   font-weight: 600;
 }
 
-.lang button:hover {
+.lang a {
+  /* #44: language links on prerendered URLs look like the buttons of the other routes */
+  display: inline-flex;
+  align-items: center;
+  line-height: normal; /* buttons do not inherit the body line-height */
+  text-decoration: none;
+}
+
+.lang button:hover,
+.lang a:hover {
   color: var(--og-blue);
 }
 
-.lang button[aria-pressed='true'] {
+.lang button[aria-pressed='true'],
+.lang a[aria-current='page'] {
   background: var(--og-blue);
   color: #fff;
 }

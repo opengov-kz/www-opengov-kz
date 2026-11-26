@@ -36,8 +36,9 @@ import aboutProjectPage_kz from './locales/kz/aboutProjectPage.json';
 import aboutProjectPage_en from './locales/en/aboutProjectPage.json';
 
 // FR-SUI-01/02: <html lang> следует за i18next; внутренний ключ казахского kz, в HTML стандартный код kk.
+// typeof guard: the module also runs in Node during prerender (#44), where there is no document.
 i18n.on('languageChanged', (lng) => {
-    document.documentElement.lang = lng === 'kz' ? 'kk' : lng;
+    if (typeof document !== 'undefined') document.documentElement.lang = lng === 'kz' ? 'kk' : lng;
 });
 
 i18n
@@ -85,6 +86,12 @@ i18n
         interpolation: {
             escapeValue: false,
         },
+        initAsync: false, // resources are bundled: ready before the first (pre)render, no RU frame on /kk and /en
     });
+
+// #44: a prerendered URL renders with an instance fixed to its language, so the language comes from the URL in the
+// same render as the route (prerender, hydration, SPA navigation) and never from the shared mutable instance.
+const fixed = {};
+export const fixedI18n = (lng) => (fixed[lng] ??= i18n.cloneInstance({ lng, initAsync: false }));
 
 export default i18n;

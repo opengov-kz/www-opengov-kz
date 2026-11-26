@@ -3,8 +3,8 @@
 // defects stay Failed (BRULE-TEST-05). /projects: no assertions on unpublished content (#14).
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
-  headerText, htmlLang, isServerNotFound, note, openLocalized, overflow, setLocale, watchErrors,
+  HEADER_LINKS, LANGUAGE_URLS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
+  headerText, homeOf, htmlLang, isServerNotFound, note, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 const TOOL_PORTALS = {
@@ -113,7 +113,7 @@ test.describe('@regression', () => {
       return;
     }
     await page.goto('/nested/pw-e2e/unknown', { waitUntil: 'load' });
-    await expect(page.locator('main a[href="/"]')).toBeVisible();
+    await expect(page.locator(`main a[href="${homeOf('ru')}"]`)).toBeVisible();
     await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
   });
 
@@ -150,7 +150,7 @@ test.describe('@regression', () => {
           if (l.href === null) confirmed.push(`missing href | ${where}`);
           else if (l.href === '') confirmed.push(`empty href | ${where}`);
           else if (l.to === 'missing') confirmed.push(`router Link without "to" (renders current URL) | ${where}`);
-          else if (path && !ROUTES.includes(path)) confirmed.push(`unknown internal route | ${where}`);
+          else if (path && !ROUTES.includes(path) && !LANGUAGE_URLS.includes(path)) confirmed.push(`unknown internal route | ${where}`);
           else if (path === route && l.region !== 'header' && l.region !== 'footer') {
             (l.to === 'unreadable' ? unclassified : candidates).push(`candidate self-link | ${where}`);
           } else if (/^https?:/.test(l.href)) external.add(l.href);
@@ -201,7 +201,8 @@ test.describe('@regression', () => {
         const el = document.activeElement;
         const cs = getComputedStyle(el);
         return {
-          id: el.getAttribute('href') ?? el.textContent.trim(),
+          // #44: language controls are identified by label (links on language URLs, buttons elsewhere).
+          id: el.closest('header ul') ? el.textContent.trim() : el.getAttribute('href') ?? el.textContent.trim(),
           inHeader: !!el.closest('header'),
           visibleFocus: (cs.outlineStyle !== 'none' && cs.outlineWidth !== '0px') || cs.boxShadow !== 'none',
         };
@@ -234,7 +235,10 @@ test.describe('@regression', () => {
     const order = [];
     for (let i = 0; i < 8; i++) {
       await page.keyboard.press('Tab');
-      order.push(await page.evaluate(() => document.activeElement.getAttribute('href') ?? document.activeElement.textContent.trim()));
+      order.push(await page.evaluate(() => {
+        const el = document.activeElement; // #44: language controls by label, as in the desktop test
+        return el.closest('header ul') ? el.textContent.trim() : el.getAttribute('href') ?? el.textContent.trim();
+      }));
     }
     expect(order).toEqual(['/', ...HEADER_LINKS, 'РУС', 'ҚАЗ', 'ENG']);
   });

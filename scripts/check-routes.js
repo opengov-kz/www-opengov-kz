@@ -1,24 +1,31 @@
-// Сверяет маршруты React Router (src/App.jsx) с allowlist rewrites в vercel.json.
-// Маршрут без rewrite получит на Vercel HTTP 404 при прямом заходе; лишний rewrite отдаст HTTP 200 вместо 404.
+// Сверяет маршруты React Router (src/App.jsx, src/routing.js) с vercel.json (#44 Phase 0).
+// Языковые URL из src/routing.js — статические HTML после prerender (cleanUrls); остальные SPA-маршруты App.jsx
+// отдаются через rewrite на /spa-shell.html. Маршрут без файла или rewrite получит на Vercel HTTP 404,
+// лишний rewrite отдаст HTTP 200 вместо 404.
 import { readFileSync } from "node:fs";
 import process from "node:process";
+import { PRERENDERED } from "../src/routing.js";
 
 const app = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
 const vercel = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 
-// "/" отдаёт сам index.html, "*" — клиентская 404; rewrites для них не нужны.
-const routes = [...app.matchAll(/<Route\s+path=['"]([^'"]+)['"]/g)]
-    .map((m) => m[1])
-    .filter((path) => path !== "/" && path !== "*");
+const spaRoutes = [...app.matchAll(/<Route\s+path=['"]([^'"]+)['"]/g)].map((m) => m[1]).filter((path) => path !== "*");
+const prerendered = PRERENDERED.map((r) => r.url);
 const rewrites = vercel.rewrites.map((r) => r.source);
 
-const missing = routes.filter((path) => !rewrites.includes(path));
-const extra = rewrites.filter((path) => !routes.includes(path));
+const errors = [];
+const missing = spaRoutes.filter((path) => !rewrites.includes(path));
+const extra = rewrites.filter((path) => !spaRoutes.includes(path));
+const both = spaRoutes.filter((path) => prerendered.includes(path));
+if (missing.length) errors.push(`нет rewrite: ${missing.join(", ")}`);
+if (extra.length) errors.push(`лишний rewrite: ${extra.join(", ")}`);
+if (both.length) errors.push(`маршрут и в App.jsx, и в routing.js: ${both.join(", ")}`);
+if (vercel.rewrites.some((r) => r.destination !== "/spa-shell.html")) errors.push("rewrite не на /spa-shell.html");
+if (vercel.cleanUrls !== true || vercel.trailingSlash !== false) errors.push("нужны cleanUrls: true и trailingSlash: false");
 
-if (missing.length || extra.length) {
-    console.error("vercel.json rewrites не совпадают с маршрутами src/App.jsx");
-    if (missing.length) console.error("  нет rewrite:", missing.join(", "));
-    if (extra.length) console.error("  лишний rewrite:", extra.join(", "));
+if (errors.length) {
+    console.error("vercel.json не совпадает с маршрутами src/App.jsx и src/routing.js");
+    for (const e of errors) console.error("  " + e);
     process.exit(1);
 }
-console.log(`check-routes: ${routes.length} маршрутов совпадают с vercel.json`);
+console.log(`check-routes: ${spaRoutes.length} SPA-маршрутов (rewrites) и ${prerendered.length} языковых URL (prerender) совпадают с vercel.json`);

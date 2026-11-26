@@ -1,6 +1,7 @@
 /* global process */
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
+import { LANGS, PRERENDERED, langOf, urlOf } from '../../src/routing.js';
 
 // The 9 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + /projects «Areas of work» (#14, not in the menu).
 export const MVP_ROUTES = ['/', '/open-government', '/tools', '/tools/open-data', '/tools/open-budgets',
@@ -30,10 +31,22 @@ export const mainPageText = (lang) => readLocale(lang, 'mainPage');
 
 export const note = (type, description) => test.info().annotations.push({ type, description });
 
+// #44 Phase 0: URLs of src/routing.js (language URLs, prerendered): RU unprefixed, /kk and /en.
+export const LANGUAGE_URLS = PRERENDERED.map((r) => r.url);
+export const homeOf = (key) => urlOf(langOf(key), '/');
+
 // Locale is not persisted by the app, so every test switches it through the UI.
 // Since #26 the header has no burger: navigation and language buttons are always visible.
+// #44: on a language URL the switcher is a link to the same page in that language (navigates to /kk/… or /en/…);
+// on the other routes it is still the in-place button.
 export async function setLocale(page, locale) {
-  await page.locator('header').getByRole('button', { name: locale.button, exact: true }).click();
+  const route = PRERENDERED.find((r) => r.url === new URL(page.url()).pathname);
+  if (route) {
+    await page.locator('header ul a[hreflang]', { hasText: locale.button }).click();
+    await expect(page).toHaveURL(urlOf(LANGS.find((l) => l.key === locale.key), route.page.path));
+  } else {
+    await page.locator('header').getByRole('button', { name: locale.button, exact: true }).click();
+  }
   await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText(locale.key).tools);
   await expect(page.locator('html')).toHaveAttribute('lang', locale.htmlLang);
 }
@@ -68,7 +81,8 @@ export async function expectNotFound(page, route, locale) {
     await expect(section.locator('a[href="/"]')).toHaveText(copy.homeLink);
   }
   await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
-  await expect(page.locator('main a[href="/"]').first()).toBeVisible();
+  // #44: the client NotFound home link keeps the language (/kk, /en); the static 404.html links to /.
+  await expect(page.locator(`main a[href="${SERVER_404 ? '/' : homeOf(locale.key)}"]`).first()).toBeVisible();
 }
 
 // goto + locale switch; on Vercel an unknown/removed path is the static 404, checked for that locale instead.

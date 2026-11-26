@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "../../ui/link";
 import { useTranslation } from "react-i18next";
 import Header from "../../header/header";
 import Footer from "../../footer/footer";

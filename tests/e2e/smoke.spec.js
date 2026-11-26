@@ -3,7 +3,7 @@
 import { expect, test } from '@playwright/test';
 import {
   HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
-  headerText, htmlLang, mainPageText, note, notFoundText, openLocalized, overflow, setLocale, watchErrors,
+  headerText, homeOf, htmlLang, mainPageText, note, notFoundText, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 test.describe('@smoke', () => {
@@ -59,14 +59,14 @@ test.describe('@smoke', () => {
       // Server 404: one static page for all languages (document lang ru, locale in its <section lang>).
       const home = SERVER_404
         ? page.locator(`main section[lang="${locale.htmlLang}"] a[href="/"]`)
-        : page.locator('main a[href="/"]');
+        : page.locator(`main a[href="${homeOf(locale.key)}"]`); // #44: the client NotFound keeps the language
       if (!SERVER_404) {
         await expect(page).toHaveTitle(copy.seoTitle);
         expect(await htmlLang(page)).toBe(locale.htmlLang);
       }
       await expect(home).toHaveText(copy.homeLink);
       await home.click();
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SERVER_404 ? '/' : homeOf(locale.key));
       await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(0);
       // The locale is not persisted, so after a full page load (server 404 -> /) the app starts in ru.
       await expect(page).toHaveTitle(mainPageText(SERVER_404 ? 'ru' : locale.key).seoTitle);
@@ -105,7 +105,8 @@ test.describe('@smoke', () => {
   test('PW-03 header language buttons RU/KZ/EN exist, default is RU', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
     for (const locale of LOCALES) {
-      await expect(page.locator('header').getByRole('button', { name: locale.button, exact: true })).toBeVisible();
+      // #44: on the language URL / the controls are links (button elsewhere); visible label checked either way.
+      await expect(page.locator('header ul').getByText(locale.button, { exact: true })).toBeVisible();
     }
     await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('ru').tools);
   });

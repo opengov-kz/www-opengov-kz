@@ -4,7 +4,7 @@
 // asserts the real HTTP 404 static page instead (F-08, helpers.expectNotFound).
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { LOCALES, NOT_FOUND_MODE, REMOVED_ROUTES, ROUTES, expectNotFound, setLocale } from './helpers.js';
+import { LANGUAGE_URLS, LOCALES, NOT_FOUND_MODE, REMOVED_ROUTES, ROUTES, expectNotFound, setLocale } from './helpers.js';
 
 const vercel = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
 const projectsText = (lang) =>
@@ -14,7 +14,10 @@ test.describe('@regression #28 legacy removal', () => {
   test('AC-05 vercel.json: no rewrite for removed routes, rewrites for surviving routes, no redirects', () => {
     const sources = vercel.rewrites.map((r) => r.source);
     expect(sources.filter((s) => REMOVED_ROUTES.includes(s)), 'removed routes still rewritten to index.html').toEqual([]);
-    expect(sources.sort()).toEqual(ROUTES.filter((r) => r !== '/').sort());
+    // #44 Phase 0: language URLs (/, /tools/open-data, /projects and /kk, /en twins) are prerendered files served by
+    // cleanUrls; the other SPA routes are rewritten to the SPA shell.
+    expect(sources.sort()).toEqual(ROUTES.filter((r) => !LANGUAGE_URLS.includes(r)).sort());
+    expect(vercel.rewrites.every((r) => r.destination === '/spa-shell.html'), 'rewrites target the SPA shell').toBe(true);
     expect(vercel.redirects, 'no redirects approved (Q-OGK-MVP-RB-04=A)').toBeUndefined();
   });
 
