@@ -2,11 +2,11 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/tools", "destination": "/spa-shell.html" },
-    { "source": "/tools/open-budgets", "destination": "/spa-shell.html" },
-    { "source": "/tools/legal-acts", "destination": "/spa-shell.html" },
-    { "source": "/open-government", "destination": "/spa-shell.html" },
-    { "source": "/community", "destination": "/spa-shell.html" },
-    { "source": "/about", "destination": "/spa-shell.html" }
+    { "source": "/tools", "destination": "/spa-shell" },
+    { "source": "/tools/open-budgets", "destination": "/spa-shell" },
+    { "source": "/tools/legal-acts", "destination": "/spa-shell" },
+    { "source": "/open-government", "destination": "/spa-shell" },
+    { "source": "/community", "destination": "/spa-shell" },
+    { "source": "/about", "destination": "/spa-shell" }
   ]
 }

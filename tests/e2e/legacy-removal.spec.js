@@ -17,7 +17,7 @@ test.describe('@regression #28 legacy removal', () => {
     // #44 Phase 0: language URLs (/, /tools/open-data, /projects and /kk, /en twins) are prerendered files served by
     // cleanUrls; the other SPA routes are rewritten to the SPA shell.
     expect(sources.sort()).toEqual(ROUTES.filter((r) => !LANGUAGE_URLS.includes(r)).sort());
-    expect(vercel.rewrites.every((r) => r.destination === '/spa-shell.html'), 'rewrites target the SPA shell').toBe(true);
+    expect(vercel.rewrites.every((r) => r.destination === '/spa-shell'), 'rewrites target the SPA shell').toBe(true);
     expect(vercel.redirects, 'no redirects approved (Q-OGK-MVP-RB-04=A)').toBeUndefined();
   });
 

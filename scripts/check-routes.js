@@ -1,6 +1,6 @@
 // Сверяет маршруты React Router (src/App.jsx, src/routing.js) с vercel.json (#44 Phase 0).
 // Языковые URL из src/routing.js — статические HTML после prerender (cleanUrls); остальные SPA-маршруты App.jsx
-// отдаются через rewrite на /spa-shell.html. Маршрут без файла или rewrite получит на Vercel HTTP 404,
+// отдаются через rewrite на /spa-shell (clean URL файла dist/spa-shell.html; с cleanUrls путь с .html не разрешается). Маршрут без файла или rewrite получит на Vercel HTTP 404,
 // лишний rewrite отдаст HTTP 200 вместо 404.
 import { readFileSync } from "node:fs";
 import process from "node:process";
@@ -20,7 +20,7 @@ const both = spaRoutes.filter((path) => prerendered.includes(path));
 if (missing.length) errors.push(`нет rewrite: ${missing.join(", ")}`);
 if (extra.length) errors.push(`лишний rewrite: ${extra.join(", ")}`);
 if (both.length) errors.push(`маршрут и в App.jsx, и в routing.js: ${both.join(", ")}`);
-if (vercel.rewrites.some((r) => r.destination !== "/spa-shell.html")) errors.push("rewrite не на /spa-shell.html");
+if (vercel.rewrites.some((r) => r.destination !== "/spa-shell")) errors.push("rewrite не на /spa-shell");
 if (vercel.cleanUrls !== true || vercel.trailingSlash !== false) errors.push("нужны cleanUrls: true и trailingSlash: false");
 
 if (errors.length) {

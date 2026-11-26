@@ -17,8 +17,11 @@ const vercelRouting = {
         return res.end()
       }
       const file = path === '/' ? '/index.html' : `${path}.html`
+      const rewrite = rewrites.find((r) => r.source === path)
+      // As on Vercel with cleanUrls, a rewrite destination is a clean URL: /spa-shell -> spa-shell.html.
       if (existsSync(`${outDir}${file}`)) req.url = file
-      else if (rewrites.some((r) => r.source === path) || !/\.[a-z0-9]+$/i.test(path)) req.url = '/spa-shell.html'
+      else if (rewrite) req.url = existsSync(`${outDir}${rewrite.destination}.html`) ? `${rewrite.destination}.html` : '/__missing__'
+      else if (!/\.[a-z0-9]+$/i.test(path)) req.url = '/spa-shell.html'
       next()
     })
   },
