@@ -32,3 +32,26 @@ dist-ssr
 
 # Local results of tasks without an Issue and local evidence copies (see CLAUDE.md)
 .evidence/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Vercel CLI project link
+.vercel
+
+# Tool caches and reports
+.eslintcache
+*.tsbuildinfo
+coverage/
+/blob-report/
+/playwright/.cache/
+
+# Claude Code local settings and graphify output
+.claude/settings.local.json
+graphify-out/
+
+# OS files
+Thumbs.db
+desktop.ini
