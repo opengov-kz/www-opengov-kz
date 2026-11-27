@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Язык общения
+
+С пользователем (Product Owner) общаться только на русском языке: ответы, вопросы, отчёты и пояснения в чате. Код, идентификаторы, имена файлов и сообщения коммитов — по соглашениям, принятым в проекте.
+
 ## Project
 
 OpenGov.kz — a static marketing/showcase site (QBS Solutions) for Kazakhstan's open-data / open-government initiative. React 19 + Vite 6, React Router 7, i18next, CSS Modules. No backend; all content is local. Deployed to Vercel automatically on push to `main`. Approved MVP demonstration URL: https://www-opengov-kz.vercel.app/ (DEC-OGK-MVP-URL-01, approved 2026-11-05). Deployment status alone does not constitute functional acceptance.
