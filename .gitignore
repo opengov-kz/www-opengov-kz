@@ -29,3 +29,6 @@ dist-ssr
 # Local Playwright artifacts (Issue #17): never commit screenshots, traces or reports
 /test-results/
 /playwright-report/
+
+# Local results of tasks without an Issue and local evidence copies (see CLAUDE.md)
+.evidence/
