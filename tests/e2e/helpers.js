@@ -1,6 +1,6 @@
-/* global process */
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
+import { LANGS, PRERENDERED, langOf, urlOf } from '../../src/routing.js';
 
 // The 9 SPA routes declared in src/App.jsx: 8 MVP routes of design v1.2 (#26) + /projects «Areas of work» (#14, not in the menu).
 export const MVP_ROUTES = ['/', '/open-government', '/tools', '/tools/open-data', '/tools/open-budgets',
@@ -30,48 +30,55 @@ export const mainPageText = (lang) => readLocale(lang, 'mainPage');
 
 export const note = (type, description) => test.info().annotations.push({ type, description });
 
+// #44: URLs of src/routing.js (language URLs, all prerendered): RU unprefixed, /kk and /en.
+export const LANGUAGE_URLS = PRERENDERED.map((r) => r.url);
+export const homeOf = (key) => urlOf(langOf(key), '/');
+// URL of the RU route `path` in the language of `locale` (a LOCALES entry), e.g. ('/tools', kz) -> '/kk/tools'.
+export const localizedUrl = (path, locale) => urlOf(langOf(locale.key), path);
+// Header menu link of the RU route `path` in the language of `locale`.
+export const navLink = (page, path, locale = LOCALES[0]) => page.locator(`header nav a[href="${localizedUrl(path, locale)}"]`);
+
 // Locale is not persisted by the app, so every test switches it through the UI.
-// Since #26 the header has no burger: navigation and language buttons are always visible.
+// Since #26 the header has no burger: navigation and language controls are always visible.
+// #44 Phase 1: on every page the switcher is a link to the same page in that language (navigates to /kk/… or /en/…).
 export async function setLocale(page, locale) {
-  await page.locator('header').getByRole('button', { name: locale.button, exact: true }).click();
-  await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText(locale.key).tools);
+  const route = PRERENDERED.find((r) => r.url === new URL(page.url()).pathname);
+  expect(route, `setLocale on a language URL, got ${page.url()}`).toBeTruthy();
+  await page.locator('header ul a[hreflang]', { hasText: locale.button }).click();
+  await expect(page).toHaveURL(urlOf(LANGS.find((l) => l.key === locale.key), route.page.path));
+  await expect(navLink(page, '/tools', locale)).toHaveText(headerText(locale.key).tools);
   await expect(page.locator('html')).toHaveAttribute('lang', locale.htmlLang);
 }
 
 // F-08 (Q-OGK-MVP-RB-08=B): the environment is chosen only by PW_BASE_URL (see playwright.config.js).
-// Local `vite preview` answers every path with the SPA, so React renders the client NotFound. A deployed
-// Vercel build answers paths outside vercel.json with HTTP 404 and the static trilingual public/404.html:
-// no React, no header, no language buttons, each language in its own <section lang>.
-export const SERVER_404 = Boolean(process.env.PW_BASE_URL);
-export const NOT_FOUND_MODE = SERVER_404 ? 'HTTP 404' : 'client';
-export const isServerNotFound = (route) => SERVER_404 && !ROUTES.includes(route);
+// #44 Phase 1: there is no SPA shell any more, so the local `vite preview` follows vercel.json like Vercel (vite.config.js)
+// and both environments answer paths outside the language URLs with HTTP 404 and the static trilingual public/404.html:
+// no React, no header, no language links, each language in its own <section lang>.
+export const SERVER_404 = true;
+export const NOT_FOUND_MODE = 'HTTP 404';
+export const isServerNotFound = (route) => !ROUTES.includes(route) && !LANGUAGE_URLS.includes(route);
 
-// NotFound for `route` in `locale`: client NotFound after switching the locale locally; on Vercel the real
-// HTTP 404 without redirect, noindex, and the locale's section with the same copy as notFoundPage.json.
+// NotFound for `route` in `locale`: the real HTTP 404 without redirect, noindex, and the locale's section with the
+// same copy as notFoundPage.json (static public/404.html, locally and on Vercel since #44 Phase 1).
 export async function expectNotFound(page, route, locale) {
   const response = await page.goto(route, { waitUntil: 'load' });
   const copy = notFoundText(locale.key);
-  if (!SERVER_404) {
-    await setLocale(page, locale);
-    await expect(page.locator('main h1')).toHaveText(copy.title);
-  } else {
-    note('environment', `HTTP 404 static page: ${response.url()}`);
-    expect(response.status(), 'server HTTP status').toBe(404);
-    expect(response.request().redirectedFrom(), 'redirect before the 404').toBeNull();
-    expect(new URL(response.url()).pathname, 'final URL').toBe(route);
-    expect(response.headers()['content-type'] ?? '').toContain('text/html');
-    await expect(page.locator('#root'), 'React must not render on the server 404').toHaveCount(0);
-    await expect(page).toHaveTitle(new RegExp(copy.title));
-    const section = page.locator(`main section[lang="${locale.htmlLang}"]`);
-    await expect(section.locator('h1, h2')).toHaveText(copy.title);
-    await expect(section.locator('p')).toHaveText(copy.text);
-    await expect(section.locator('a[href="/"]')).toHaveText(copy.homeLink);
-  }
+  note('environment', `HTTP 404 static page: ${response.url()}`);
+  expect(response.status(), 'server HTTP status').toBe(404);
+  expect(response.request().redirectedFrom(), 'redirect before the 404').toBeNull();
+  expect(new URL(response.url()).pathname, 'final URL').toBe(route);
+  expect(response.headers()['content-type'] ?? '').toContain('text/html');
+  await expect(page.locator('#root'), 'React must not render on the server 404').toHaveCount(0);
+  await expect(page).toHaveTitle(new RegExp(copy.title));
+  const section = page.locator(`main section[lang="${locale.htmlLang}"]`);
+  await expect(section.locator('h1, h2')).toHaveText(copy.title);
+  await expect(section.locator('p')).toHaveText(copy.text);
+  await expect(section.locator('a[href="/"]')).toHaveText(copy.homeLink);
   await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
   await expect(page.locator('main a[href="/"]').first()).toBeVisible();
 }
 
-// goto + locale switch; on Vercel an unknown/removed path is the static 404, checked for that locale instead.
+// goto + locale switch; an unknown/removed path is the static HTTP 404, checked for that locale instead.
 export async function openLocalized(page, route, locale) {
   if (isServerNotFound(route)) return expectNotFound(page, route, locale);
   await page.goto(route, { waitUntil: 'load' });

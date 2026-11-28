@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from './link';
 import { useTranslation } from 'react-i18next';
 import styles from './breadcrumbs.module.css';
 

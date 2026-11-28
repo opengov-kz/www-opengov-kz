@@ -3,7 +3,7 @@
 // keyboard focus, /about vs removed /aboutMe (#28).
 import { expect, test } from '@playwright/test';
 import { APPROVED, DISCLAIMER } from './approved-copy.js';
-import { HEADER_LINKS, LOCALES, MVP_ROUTES, UNKNOWN_ROUTE, isServerNotFound, note, overflow, setLocale } from './helpers.js';
+import { HEADER_LINKS, LANGUAGE_URLS, LOCALES, MVP_ROUTES, UNKNOWN_ROUTE, isServerNotFound, navLink, note, overflow, setLocale } from './helpers.js';
 
 const WIDTHS = [320, 375, 390, 768, 1024, 1440];
 const desktopOnly = (testInfo) => test.skip(testInfo.project.name !== 'desktop-1440', 'viewport matrix runs once, in desktop project');
@@ -50,9 +50,9 @@ test.describe('@redesign', () => {
           note('overflow', `${route} ${locale.key} ${width}: scrollWidth=${o.scrollWidth}`);
           expect.soft(o.scrollWidth, `${locale.key} ${width}px horizontal overflow`).toBeLessThanOrEqual(width);
           for (const href of HEADER_LINKS) {
-            await expect.soft(page.locator(`header nav a[href="${href}"]`), `${locale.key} ${width}px nav ${href} visible`).toBeVisible();
+            await expect.soft(navLink(page, href, locale), `${locale.key} ${width}px nav ${href} visible`).toBeVisible();
           }
-          const logo = await page.locator('header a[href="/"]').boundingBox();
+          const logo = await page.locator('header').getByRole('link', { name: 'OpenGov.kz', exact: true }).boundingBox(); // #44: href is /kk, /en on those URLs
           const nav = await page.locator('header nav').boundingBox();
           if (width <= 390) {
             expect.soft(nav.y, `${locale.key} ${width}px: navigation is the second header row`).toBeGreaterThanOrEqual(logo.y + logo.height);
@@ -83,8 +83,8 @@ test.describe('@redesign', () => {
   for (const locale of LOCALES) {
     test(`#40 AC-01 header nav aria-current and highlight on every route [${locale.key}]`, async ({ page }, testInfo) => {
       for (const route of [...MVP_ROUTES, '/projects', UNKNOWN_ROUTE]) {
-        // F-40-PM-01: on a deployment an unknown path is the static HTTP 404 page (no React, no header), so it can
-        // carry no aria-current; locally it is the client NotFound with the header, checked like any other route.
+        // F-40-PM-01: an unknown path is the static HTTP 404 page (no React, no header), so it can carry no aria-current;
+        // since #44 Phase 1 locally too (vite preview follows vercel.json).
         if (isServerNotFound(route)) {
           const response = await page.goto(route, { waitUntil: 'load' });
           expect(response.status(), `${route} server HTTP status`).toBe(404);
@@ -98,7 +98,7 @@ test.describe('@redesign', () => {
         await setLocale(page, locale);
         await page.mouse.move(0, 0); // no hover colour on nav links
         for (const href of HEADER_LINKS) {
-          const link = page.locator(`header nav a[href="${href}"]`);
+          const link = navLink(page, href, locale); // #44: menu link of the page language URL
           const want = expectedCurrent(route, href);
           const where = `${route} → ${href}`;
           if (want) await expect(link, where).toHaveAttribute('aria-current', want);
@@ -106,7 +106,8 @@ test.describe('@redesign', () => {
           await expect(link, where).toHaveCSS('color', want ? BLUE : NAVY);
           await expect(link, where).toHaveCSS('border-bottom-color', want ? BLUE : 'rgba(0, 0, 0, 0)');
         }
-        await expect(page.locator('header [aria-current]'), route).toHaveCount(HEADER_LINKS.some((h) => expectedCurrent(route, h)) ? 1 : 0);
+        // #44: the language switcher on language URLs carries its own aria-current (d3-spike.spec.js), so count nav only.
+        await expect(page.locator('header nav [aria-current]'), route).toHaveCount(HEADER_LINKS.some((h) => expectedCurrent(route, h)) ? 1 : 0);
         if (locale.key === 'ru' && ['/tools', '/tools/open-data', '/about', '/'].includes(route)) {
           const name = route === '/' ? 'home' : route.slice(1).replace(/\//g, '-');
           await page.locator('header').screenshot({ path: testInfo.outputPath(`header-${name}-${testInfo.project.name}.png`) });
@@ -115,7 +116,7 @@ test.describe('@redesign', () => {
     });
   }
 
-  // Issue #40 AC-03: favicon from the existing ◩ mark, linked from the SPA shell and the static 404 page.
+  // Issue #40 AC-03: favicon from the existing ◩ mark, linked from the prerendered pages and the static 404 page.
   test('#40 AC-03 favicon.svg and favicon.ico are linked and served', async ({ page, request }) => {
     for (const [path, type] of [['/favicon.svg', 'image/svg+xml'], ['/favicon.ico', 'image/']]) {
       const res = await request.get(path);
@@ -158,7 +159,8 @@ test.describe('@redesign', () => {
     for (const route of MVP_ROUTES) {
       await page.goto(route, { waitUntil: 'load' });
       const hrefs = await page.locator('a[href^="/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-      for (const h of hrefs) if (!MVP_ROUTES.includes(h)) bad.push(`${route} -> ${h}`);
+      // #44: plus the /kk and /en URLs of MVP pages (language switcher on language URLs), never /projects.
+      for (const h of hrefs) if (!MVP_ROUTES.includes(h) && !(LANGUAGE_URLS.includes(h) && /^\/(kk|en)(\/|$)/.test(h) && !h.endsWith('/projects'))) bad.push(`${route} -> ${h}`);
     }
     expect(bad, 'internal links outside the eight approved routes').toEqual([]);
   });
@@ -175,22 +177,25 @@ test.describe('@redesign', () => {
     }
   });
 
-  // #28: legacy /aboutMe is removed, so it must render the client NotFound, not the /about page.
+  // #28: legacy /aboutMe is removed, so it must be the HTTP 404 page, not the /about page.
   test('AC-IMP-05 /about is the approved page and removed /aboutMe is NotFound', async ({ page }) => {
     await page.goto('/about', { waitUntil: 'load' });
     await expect(page.locator('main h1')).toHaveText(APPROVED['/about'].ru.h1);
-    await page.goto('/aboutMe', { waitUntil: 'load' });
+    expect((await page.goto('/aboutMe', { waitUntil: 'load' })).status(), '/aboutMe HTTP status').toBe(404);
     await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
     await expect(page.getByText(APPROVED['/about'].ru.h1)).toHaveCount(0);
   });
 
   test('AC-IMP-02 language switch updates H1, title and lang without reload', async ({ page }) => {
     await page.goto('/community', { waitUntil: 'load' });
+    await page.evaluate(() => { window.__noReload = 1; }); // #44: a full page load would drop this marker
     for (const locale of [LOCALES[1], LOCALES[2], LOCALES[0]]) {
       await setLocale(page, locale);
       await expect(page.locator('main h1')).toHaveText(APPROVED['/community'][locale.key].h1);
       await expect(page).toHaveTitle(APPROVED['/community'][locale.key].title);
-      await expect(page.locator('header button[aria-pressed="true"]')).toHaveText(locale.button);
+      // #44 Phase 1: the current language is the language link with aria-current="page".
+      await expect(page.locator('header ul a[aria-current="page"]')).toHaveText(locale.button);
+      expect(await page.evaluate(() => window.__noReload), `${locale.key}: SPA navigation, no reload`).toBe(1);
     }
   });
 });

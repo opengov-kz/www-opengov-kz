@@ -35,10 +35,9 @@ import aboutProjectPage_ru from './locales/ru/aboutProjectPage.json';
 import aboutProjectPage_kz from './locales/kz/aboutProjectPage.json';
 import aboutProjectPage_en from './locales/en/aboutProjectPage.json';
 
-// FR-SUI-01/02: <html lang> следует за i18next; внутренний ключ казахского kz, в HTML стандартный код kk.
-i18n.on('languageChanged', (lng) => {
-    document.documentElement.lang = lng === 'kz' ? 'kk' : lng;
-});
+// FR-SUI-01/02: <html lang> is the language of the URL (#44): the prerendered HTML carries it and LangScope (src/App.jsx)
+// keeps it on SPA navigation (internal key kz, HTML code kk). No languageChanged listener: init() emits 'ru', which would
+// overwrite the lang of a /kk or /en page between script start and hydration.
 
 i18n
     .use(initReactI18next)
@@ -85,6 +84,12 @@ i18n
         interpolation: {
             escapeValue: false,
         },
+        initAsync: false, // resources are bundled: ready before the first (pre)render, no RU frame on /kk and /en
     });
+
+// #44: a prerendered URL renders with an instance fixed to its language, so the language comes from the URL in the
+// same render as the route (prerender, hydration, SPA navigation) and never from the shared mutable instance.
+const fixed = {};
+export const fixedI18n = (lng) => (fixed[lng] ??= i18n.cloneInstance({ lng, initAsync: false }));
 
 export default i18n;

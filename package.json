@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/check-routes.js",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.js && node scripts/check-routes.js --dist",
     "check:routes": "node scripts/check-routes.js",
     "lint": "eslint .",
     "test:e2e": "playwright test",
@@ -22,6 +22,7 @@
     "react-router-dom": "^7.5.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.1",
     "@eslint/js": "^9.22.0",
     "@playwright/test": "1.64.1",
     "@types/react": "^19.0.10",

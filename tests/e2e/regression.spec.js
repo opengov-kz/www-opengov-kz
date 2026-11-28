@@ -3,7 +3,7 @@
 // defects stay Failed (BRULE-TEST-05). /projects: no assertions on unpublished content (#14).
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
+  HEADER_LINKS, LANGUAGE_URLS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, ROUTES, UNKNOWN_ROUTE, expectNotFound, expectRendered,
   headerText, htmlLang, isServerNotFound, note, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
@@ -108,13 +108,10 @@ test.describe('@regression', () => {
   });
 
   test(`PW-06 nested unknown path renders ${NOT_FOUND_MODE} NotFound`, async ({ page }) => {
-    if (SERVER_404) {
-      for (const locale of LOCALES) await expectNotFound(page, '/nested/pw-e2e/unknown', locale);
-      return;
+    // #44 Phase 1: also under a language prefix (/kk/…, /en/…) an unknown path is the static HTTP 404.
+    for (const path of ['/nested/pw-e2e/unknown', '/kk/pw-e2e-unknown', '/en/tools/pw-e2e-unknown']) {
+      for (const locale of LOCALES) await expectNotFound(page, path, locale);
     }
-    await page.goto('/nested/pw-e2e/unknown', { waitUntil: 'load' });
-    await expect(page.locator('main a[href="/"]')).toBeVisible();
-    await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
   });
 
   for (const route of [...ROUTES, UNKNOWN_ROUTE]) {
@@ -142,6 +139,7 @@ test.describe('@regression', () => {
       const headerMarkers = new Set();
       for (const locale of LOCALES) {
         await setLocale(page, locale);
+        const current = new URL(page.url()).pathname; // #44: the page in this locale is its language URL
         for (const l of await auditLinks(page)) {
           const where = `route=${route} | locale=${locale.key} | viewport=${testInfo.project.name} | `
             + `selector=${l.selector} | label="${l.label}" | href=${JSON.stringify(l.href)}`;
@@ -150,8 +148,8 @@ test.describe('@regression', () => {
           if (l.href === null) confirmed.push(`missing href | ${where}`);
           else if (l.href === '') confirmed.push(`empty href | ${where}`);
           else if (l.to === 'missing') confirmed.push(`router Link without "to" (renders current URL) | ${where}`);
-          else if (path && !ROUTES.includes(path)) confirmed.push(`unknown internal route | ${where}`);
-          else if (path === route && l.region !== 'header' && l.region !== 'footer') {
+          else if (path && !ROUTES.includes(path) && !LANGUAGE_URLS.includes(path)) confirmed.push(`unknown internal route | ${where}`);
+          else if (path === current && l.region !== 'header' && l.region !== 'footer') {
             (l.to === 'unreadable' ? unclassified : candidates).push(`candidate self-link | ${where}`);
           } else if (/^https?:/.test(l.href)) external.add(l.href);
         }
@@ -191,7 +189,7 @@ test.describe('@regression', () => {
     }
   });
 
-  test('PW-09 desktop keyboard: header links and language buttons', async ({ page }, testInfo) => {
+  test('PW-09 desktop keyboard: header links and language links', async ({ page }, testInfo) => {
     test.skip(isMobile(testInfo), 'desktop header layout; mobile menu covered by PW-09 mobile test');
     await page.goto('/', { waitUntil: 'load' });
     const seen = [];
@@ -201,7 +199,8 @@ test.describe('@regression', () => {
         const el = document.activeElement;
         const cs = getComputedStyle(el);
         return {
-          id: el.getAttribute('href') ?? el.textContent.trim(),
+          // #44: language controls are identified by their visible label.
+          id: el.closest('header ul') ? el.textContent.trim() : el.getAttribute('href') ?? el.textContent.trim(),
           inHeader: !!el.closest('header'),
           visibleFocus: (cs.outlineStyle !== 'none' && cs.outlineWidth !== '0px') || cs.boxShadow !== 'none',
         };
@@ -218,23 +217,30 @@ test.describe('@regression', () => {
     await page.locator('header nav a[href="/community"]').focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL('/community');
-    await page.locator('header').getByRole('button', { name: 'ENG', exact: true }).focus();
+    // #44 Phase 1: the language controls are links (accessible names «ENG — English», «ҚАЗ — Қазақша»), activated by
+    // Enter; Space scrolls the page on a link by platform convention, so the former Space-on-button step uses Enter too.
+    await page.locator('header').getByRole('link', { name: 'ENG — English', exact: true }).focus();
     await page.keyboard.press('Enter');
-    await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('en').tools);
-    await page.locator('header').getByRole('button', { name: 'ҚАЗ', exact: true }).focus();
-    await page.keyboard.press('Space');
-    await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('kz').tools);
+    await expect(page).toHaveURL('/en/community');
+    await expect(page.locator('header nav a[href="/en/tools"]')).toHaveText(headerText('en').tools);
+    await page.locator('header').getByRole('link', { name: 'ҚАЗ — Қазақша', exact: true }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL('/kk/community');
+    await expect(page.locator('header nav a[href="/kk/tools"]')).toHaveText(headerText('kz').tools);
   });
 
   // #26 replaced the burger (#19 D5) with the approved always-visible two-row navigation (Q-OGK-DESIGN-11=A).
-  test('PW-09 mobile keyboard: logo, navigation and language buttons in order, no burger', async ({ page }, testInfo) => {
+  test('PW-09 mobile keyboard: logo, navigation and language links in order, no burger', async ({ page }, testInfo) => {
     test.skip(!isMobile(testInfo), 'mobile two-row header');
     await page.goto('/', { waitUntil: 'load' });
     await expect(page.locator('header button[aria-expanded]'), 'no burger').toHaveCount(0);
     const order = [];
     for (let i = 0; i < 8; i++) {
       await page.keyboard.press('Tab');
-      order.push(await page.evaluate(() => document.activeElement.getAttribute('href') ?? document.activeElement.textContent.trim()));
+      order.push(await page.evaluate(() => {
+        const el = document.activeElement; // #44: language controls by label, as in the desktop test
+        return el.closest('header ul') ? el.textContent.trim() : el.getAttribute('href') ?? el.textContent.trim();
+      }));
     }
     expect(order).toEqual(['/', ...HEADER_LINKS, 'РУС', 'ҚАЗ', 'ENG']);
   });
