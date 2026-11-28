@@ -14,6 +14,7 @@ const app = (
   </StrictMode>
 )
 
-// #44: prerendered URLs ship their HTML and are hydrated; other routes get the empty SPA shell and render on the client.
+// #44: every language URL ships its prerendered HTML and is hydrated. createRoot remains for the dev server
+// (`npm run dev`), which serves the empty index.html template.
 if (root.hasChildNodes()) hydrateRoot(root, app)
 else createRoot(root).render(app)

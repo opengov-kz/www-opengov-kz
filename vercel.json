@@ -1,12 +1,271 @@
 {
-  "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/open-government.html",
+      "destination": "/open-government",
+      "permanent": true
+    },
+    {
+      "source": "/tools.html",
+      "destination": "/tools",
+      "permanent": true
+    },
+    {
+      "source": "/tools/open-data.html",
+      "destination": "/tools/open-data",
+      "permanent": true
+    },
+    {
+      "source": "/tools/open-budgets.html",
+      "destination": "/tools/open-budgets",
+      "permanent": true
+    },
+    {
+      "source": "/tools/legal-acts.html",
+      "destination": "/tools/legal-acts",
+      "permanent": true
+    },
+    {
+      "source": "/community.html",
+      "destination": "/community",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/projects.html",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/kk.html",
+      "destination": "/kk",
+      "permanent": true
+    },
+    {
+      "source": "/kk/open-government.html",
+      "destination": "/kk/open-government",
+      "permanent": true
+    },
+    {
+      "source": "/kk/tools.html",
+      "destination": "/kk/tools",
+      "permanent": true
+    },
+    {
+      "source": "/kk/tools/open-data.html",
+      "destination": "/kk/tools/open-data",
+      "permanent": true
+    },
+    {
+      "source": "/kk/tools/open-budgets.html",
+      "destination": "/kk/tools/open-budgets",
+      "permanent": true
+    },
+    {
+      "source": "/kk/tools/legal-acts.html",
+      "destination": "/kk/tools/legal-acts",
+      "permanent": true
+    },
+    {
+      "source": "/kk/community.html",
+      "destination": "/kk/community",
+      "permanent": true
+    },
+    {
+      "source": "/kk/about.html",
+      "destination": "/kk/about",
+      "permanent": true
+    },
+    {
+      "source": "/kk/projects.html",
+      "destination": "/kk/projects",
+      "permanent": true
+    },
+    {
+      "source": "/en.html",
+      "destination": "/en",
+      "permanent": true
+    },
+    {
+      "source": "/en/open-government.html",
+      "destination": "/en/open-government",
+      "permanent": true
+    },
+    {
+      "source": "/en/tools.html",
+      "destination": "/en/tools",
+      "permanent": true
+    },
+    {
+      "source": "/en/tools/open-data.html",
+      "destination": "/en/tools/open-data",
+      "permanent": true
+    },
+    {
+      "source": "/en/tools/open-budgets.html",
+      "destination": "/en/tools/open-budgets",
+      "permanent": true
+    },
+    {
+      "source": "/en/tools/legal-acts.html",
+      "destination": "/en/tools/legal-acts",
+      "permanent": true
+    },
+    {
+      "source": "/en/community.html",
+      "destination": "/en/community",
+      "permanent": true
+    },
+    {
+      "source": "/en/about.html",
+      "destination": "/en/about",
+      "permanent": true
+    },
+    {
+      "source": "/en/projects.html",
+      "destination": "/en/projects",
+      "permanent": true
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/kk/index",
+      "destination": "/kk",
+      "permanent": true
+    },
+    {
+      "source": "/en/index",
+      "destination": "/en",
+      "permanent": true
+    },
+    {
+      "source": "/kk/index.html",
+      "destination": "/kk",
+      "permanent": true
+    },
+    {
+      "source": "/en/index.html",
+      "destination": "/en",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/tools", "destination": "/spa-shell" },
-    { "source": "/tools/open-budgets", "destination": "/spa-shell" },
-    { "source": "/tools/legal-acts", "destination": "/spa-shell" },
-    { "source": "/open-government", "destination": "/spa-shell" },
-    { "source": "/community", "destination": "/spa-shell" },
-    { "source": "/about", "destination": "/spa-shell" }
+    {
+      "source": "/open-government",
+      "destination": "/open-government.html"
+    },
+    {
+      "source": "/tools",
+      "destination": "/tools.html"
+    },
+    {
+      "source": "/tools/open-data",
+      "destination": "/tools/open-data.html"
+    },
+    {
+      "source": "/tools/open-budgets",
+      "destination": "/tools/open-budgets.html"
+    },
+    {
+      "source": "/tools/legal-acts",
+      "destination": "/tools/legal-acts.html"
+    },
+    {
+      "source": "/community",
+      "destination": "/community.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/projects.html"
+    },
+    {
+      "source": "/kk",
+      "destination": "/kk.html"
+    },
+    {
+      "source": "/kk/open-government",
+      "destination": "/kk/open-government.html"
+    },
+    {
+      "source": "/kk/tools",
+      "destination": "/kk/tools.html"
+    },
+    {
+      "source": "/kk/tools/open-data",
+      "destination": "/kk/tools/open-data.html"
+    },
+    {
+      "source": "/kk/tools/open-budgets",
+      "destination": "/kk/tools/open-budgets.html"
+    },
+    {
+      "source": "/kk/tools/legal-acts",
+      "destination": "/kk/tools/legal-acts.html"
+    },
+    {
+      "source": "/kk/community",
+      "destination": "/kk/community.html"
+    },
+    {
+      "source": "/kk/about",
+      "destination": "/kk/about.html"
+    },
+    {
+      "source": "/kk/projects",
+      "destination": "/kk/projects.html"
+    },
+    {
+      "source": "/en",
+      "destination": "/en.html"
+    },
+    {
+      "source": "/en/open-government",
+      "destination": "/en/open-government.html"
+    },
+    {
+      "source": "/en/tools",
+      "destination": "/en/tools.html"
+    },
+    {
+      "source": "/en/tools/open-data",
+      "destination": "/en/tools/open-data.html"
+    },
+    {
+      "source": "/en/tools/open-budgets",
+      "destination": "/en/tools/open-budgets.html"
+    },
+    {
+      "source": "/en/tools/legal-acts",
+      "destination": "/en/tools/legal-acts.html"
+    },
+    {
+      "source": "/en/community",
+      "destination": "/en/community.html"
+    },
+    {
+      "source": "/en/about",
+      "destination": "/en/about.html"
+    },
+    {
+      "source": "/en/projects",
+      "destination": "/en/projects.html"
+    }
   ]
 }

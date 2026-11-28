@@ -30,9 +30,6 @@ dist-ssr
 /test-results/
 /playwright-report/
 
-# #44 Phase 0 visual reference screenshots (taken from the baseline Staging; evidence, never committed)
-/tests/e2e/*-snapshots/
-
 # Local results of tasks without an Issue and local evidence copies (see CLAUDE.md)
 .evidence/
 

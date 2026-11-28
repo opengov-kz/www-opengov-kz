@@ -2,8 +2,8 @@
 // /projects (reachability only) and one unknown path, both viewports, RU/KZ/EN where applicable.
 import { expect, test } from '@playwright/test';
 import {
-  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, SERVER_404, UNKNOWN_ROUTE, expectNotFound, expectRendered,
-  headerText, homeOf, htmlLang, mainPageText, note, notFoundText, openLocalized, overflow, setLocale, watchErrors,
+  HEADER_LINKS, LOCALES, NOT_FOUND_MODE, P0_ROUTES, UNKNOWN_ROUTE, expectNotFound, expectRendered,
+  headerText, htmlLang, mainPageText, note, notFoundText, openLocalized, overflow, setLocale, watchErrors,
 } from './helpers.js';
 
 test.describe('@smoke', () => {
@@ -48,7 +48,7 @@ test.describe('@smoke', () => {
       expect(again.status()).toBe(200);
       await expect(page).toHaveURL(route);
       await expectRendered(page);
-      note('scope', 'Local vite preview answers 200 for any path; real HTTP status is PW-12 (separate gate)');
+      note('scope', 'Since #44 Phase 1 local vite preview follows vercel.json; the deployed HTTP matrix is checked on Preview');
     });
   }
 
@@ -56,20 +56,15 @@ test.describe('@smoke', () => {
     test(`PW-06 ${NOT_FOUND_MODE} NotFound ${locale.key}: copy, title, lang, noindex and cleanup`, async ({ page }) => {
       const copy = notFoundText(locale.key);
       await expectNotFound(page, UNKNOWN_ROUTE, locale);
-      // Server 404: one static page for all languages (document lang ru, locale in its <section lang>).
-      const home = SERVER_404
-        ? page.locator(`main section[lang="${locale.htmlLang}"] a[href="/"]`)
-        : page.locator(`main a[href="${homeOf(locale.key)}"]`); // #44: the client NotFound keeps the language
-      if (!SERVER_404) {
-        await expect(page).toHaveTitle(copy.seoTitle);
-        expect(await htmlLang(page)).toBe(locale.htmlLang);
-      }
+      // Server 404 (locally and on Vercel since #44 Phase 1): one static page for all languages (document lang ru,
+      // locale in its <section lang>), its home link is / for every language.
+      const home = page.locator(`main section[lang="${locale.htmlLang}"] a[href="/"]`);
       await expect(home).toHaveText(copy.homeLink);
       await home.click();
-      await expect(page).toHaveURL(SERVER_404 ? '/' : homeOf(locale.key));
+      await expect(page).toHaveURL('/');
       await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(0);
       // The locale is not persisted, so after a full page load (server 404 -> /) the app starts in ru.
-      await expect(page).toHaveTitle(mainPageText(SERVER_404 ? 'ru' : locale.key).seoTitle);
+      await expect(page).toHaveTitle(mainPageText('ru').seoTitle);
     });
   }
 
@@ -102,12 +97,13 @@ test.describe('@smoke', () => {
     });
   }
 
-  test('PW-03 header language buttons RU/KZ/EN exist, default is RU', async ({ page }) => {
+  test('PW-03 header language links RU/KZ/EN exist, default is RU', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
     for (const locale of LOCALES) {
-      // #44: on the language URL / the controls are links (button elsewhere); visible label checked either way.
-      await expect(page.locator('header ul').getByText(locale.button, { exact: true })).toBeVisible();
+      // #44: the language controls are links (no buttons since Phase 1); visible label checked.
+      await expect(page.locator('header ul a[hreflang]').getByText(locale.button, { exact: true })).toBeVisible();
     }
+    await expect(page.locator('header ul button'), 'no language buttons (#44 Phase 1)').toHaveCount(0);
     await expect(page.locator('header nav a[href="/tools"]')).toHaveText(headerText('ru').tools);
   });
 });

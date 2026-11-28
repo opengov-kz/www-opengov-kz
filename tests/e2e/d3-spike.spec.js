@@ -3,21 +3,22 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { LANGS, PRERENDERED, SITE, urlOf } from '../../src/routing.js';
 
-// #44 Phase 0 spike: the nine language URLs of src/routing.js (P0-AC-01…09). HTTP 200/308/404 is checked on the
-// Vercel Preview with the HTTP matrix, not here (local vite preview only imitates vercel.json).
+// #44 D-3 language URLs: the 27 URLs of src/routing.js (9 routes × RU, /kk, /en), Phase 1 AC-01…08, AC-12.
+// The HTTP 200/308/404 matrix (AC-09) is http-contract.spec.js, axe (AC-06) is a11y-axe.spec.js.
 // D3_BASELINE=1 (with PW_BASE_URL of the baseline Staging) runs only the visual test and writes the reference
-// screenshots: the baseline has no /kk or /en URLs, so it opens the RU URL and switches with the header button.
+// screenshots (Q-OGK D-2=A, committed): the baseline has no /kk or /en URLs, so it opens the RU URL and switches with
+// the header button.
 const BASELINE = process.env.D3_BASELINE === '1';
 
 const locale = (lang, ns) => JSON.parse(readFileSync(new URL(`../../src/locales/${lang.key}/${ns}.json`, import.meta.url), 'utf8'));
 const pick = (obj, key) => key.split('.').reduce((o, k) => o[k], obj);
-const H1 = { '/': ['mainPage', 'hero.title'], '/tools/open-data': ['toolsPage', 'portals.openData.title'], '/projects': ['projectsPage', 'hero.title'] };
-const h1Of = (r) => pick(locale(r.lang, H1[r.page.path][0]), H1[r.page.path][1]);
+const h1Of = (r) => pick(locale(r.lang, r.page.ns), r.page.h1);
 const seoOf = (r, key) => pick(locale(r.lang, r.page.ns), `${r.page.seo}${key}`);
 const find = (lang, path) => PRERENDERED.find((r) => r.lang === lang && r.page.path === path);
 const slug = (r) => `${r.lang.hreflang}${r.page.path === '/' ? '-home' : r.page.path.replaceAll('/', '-')}`;
+const [RU, KK, EN] = LANGS;
 
-// Head state that P0-AC-05/06 cover, read from the live DOM.
+// Head state that AC-07/08 cover, read from the live DOM.
 const headState = (page) => page.evaluate(() => ({
   lang: document.documentElement.lang,
   title: document.title,
@@ -38,9 +39,9 @@ function assertHead(state, r) {
   } else {
     expect(state.robots, 'indexable: no robots meta').toEqual([]);
     expect(state.canonicals, 'one self-canonical').toEqual([SITE + r.url]);
-    expect(state.alternates, 'reciprocal hreflang').toEqual([
+    expect(state.alternates, 'reciprocal hreflang, x-default RU (P0-04=A)').toEqual([
       ...LANGS.map((l) => `${l.hreflang} ${SITE}${urlOf(l, r.page.path)}`),
-      `x-default ${SITE}${urlOf(LANGS[0], r.page.path)}`,
+      `x-default ${SITE}${urlOf(RU, r.page.path)}`,
     ]);
   }
 }
@@ -55,27 +56,44 @@ async function instrument(page) {
   page.on('console', (m) => { if (m.type() === 'error' || /hydrat/i.test(m.text())) errors.push(`${m.type()}: ${m.text()}`); });
   await page.addInitScript(() => {
     window.__h1 = [];
+    window.__lang = [];
     new MutationObserver(() => {
       const text = document.querySelector('h1')?.textContent;
       if (text && window.__h1.at(-1) !== text) window.__h1.push(text);
-    }).observe(document, { subtree: true, childList: true, characterData: true });
+      // every value <html lang> takes from the first parsed byte on (a transient wrong lang is caught too)
+      const lang = document.documentElement?.getAttribute('lang');
+      if (lang && window.__lang.at(-1) !== lang) window.__lang.push(lang);
+    }).observe(document, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['lang'] });
   });
   return errors;
 }
 const hydrated = (page) => expect.poll(() => page.evaluate(() =>
   Object.keys(document.getElementById('root') ?? {}).some((k) => k.startsWith('__reactContainer'))), { message: 'React root attached' }).toBe(true);
 const langLinks = (page) => page.locator('header ul a[hreflang]');
+const LANGUAGE_URLS = PRERENDERED.map((r) => r.url);
 
-test.describe('@d3 #44 Phase 0 language URLs', () => {
+// Lazy images below the fold (src/ui/illustration.jsx) load nondeterministically in a full-page screenshot (#47):
+// force and await them before a reference or a compared screenshot.
+const loadImages = (page) => page.evaluate(async () => {
+  const imgs = [...document.images];
+  imgs.forEach((i) => { i.loading = 'eager'; });
+  await Promise.all(imgs.map((i) => (i.complete && i.naturalWidth ? i.decode().catch(() => {})
+    : new Promise((ok) => { i.onload = i.onerror = ok; }).then(() => i.decode().catch(() => {})))));
+});
+
+test.describe('@d3 #44 language URLs', () => {
   test.skip(BASELINE, 'D3_BASELINE runs only the visual reference');
 
   for (const r of PRERENDERED) {
-    test(`P0-AC-01/02/05/06 static HTML without JS ${r.url}`, async ({ browser, request }, info) => {
+    test(`AC-01/02/07 static HTML without JS ${r.url}`, async ({ browser, request }, info) => {
       const res = await request.get(r.url, { maxRedirects: 0 });
       expect(res.status(), 'HTTP status').toBe(200);
       const raw = await res.text();
-      expect(raw, 'raw HTML has the H1').toContain(h1Of(r));
+      const rawH1 = [...raw.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => m[1].replace(/<[^>]+>/g, '')
+        .replace(/&(amp|lt|gt|quot|#x27|#39);/g, (_, e) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#x27': "'", '#39': "'" })[e]));
+      expect(rawH1, 'raw HTML: one h1 with the page text').toEqual([h1Of(r)]);
       expect(raw).toContain(`<html lang="${r.lang.hreflang}">`);
+      expect(raw, 'raw HTML: main').toContain('<main');
 
       const context = await browser.newContext({ javaScriptEnabled: false, storageState: info.project.use.storageState });
       const page = await context.newPage();
@@ -88,30 +106,46 @@ test.describe('@d3 #44 Phase 0 language URLs', () => {
       await context.close();
     });
 
-    test(`P0-AC-03/04 first render language and hydration ${r.url}`, async ({ page }) => {
+    test(`AC-03/12 first render language and hydration ${r.url}`, async ({ page }) => {
       const errors = await instrument(page);
       await page.goto(r.url, { waitUntil: 'load' });
       await hydrated(page);
       await page.waitForTimeout(300); // late hydration recoverable errors are reported asynchronously
       expect(await page.evaluate(() => window.__h1), 'H1 texts from the first byte: no other language').toEqual([h1Of(r)]);
+      expect(await page.evaluate(() => window.__lang), '<html lang> from the first byte: never another language').toEqual([r.lang.hreflang]);
       expect(errors, 'console/page errors and hydration warnings').toEqual([]);
       await expectHead(page, r);
     });
 
-    test(`P0-AC-08/09 language links, keyboard, overflow ${r.url}`, async ({ page }, info) => {
+    test(`AC-05 internal links keep the language ${r.url}`, async ({ page }) => {
+      await page.goto(r.url, { waitUntil: 'load' });
+      await hydrated(page);
+      // Every same-site link outside the language switcher is a language URL of the page language (/projects is no
+      // menu item, so it may only appear as the current page).
+      const hrefs = await page.locator('a[href^="/"]').evaluateAll((as) =>
+        as.filter((a) => !a.closest('header ul')).map((a) => a.getAttribute('href')));
+      expect(hrefs.length, 'internal links found').toBeGreaterThan(5);
+      const wrong = hrefs.filter((h) => !LANGUAGE_URLS.includes(h) || PRERENDERED.find((x) => x.url === h).lang !== r.lang);
+      expect(wrong, `links outside ${r.lang.hreflang} language URLs`).toEqual([]);
+    });
+
+    test(`AC-04/06/12 language links, keyboard, overflow ${r.url}`, async ({ page }, info) => {
       const errors = await instrument(page);
       await page.goto(r.url, { waitUntil: 'load' });
       await hydrated(page);
 
       const links = langLinks(page);
       await expect(links).toHaveCount(3);
+      await expect(page.locator('header button'), 'no language buttons (P0-03=A, F-06)').toHaveCount(0);
       for (const [i, l] of LANGS.entries()) {
         const link = links.nth(i);
         await expect(link).toHaveAttribute('href', urlOf(l, r.page.path));
         await expect(link).toHaveAttribute('lang', l.hreflang);
         await expect(link).toHaveAttribute('hreflang', l.hreflang);
         await expect(link).toHaveText(l.label);
-        await expect(page.getByRole('link', { name: l.name, exact: true })).toHaveCount(1);
+        // accessible name: visible label + language name (P0-05=A, AC-06 decision A, WCAG 2.5.3)
+        await expect(link).toHaveAccessibleName(`${l.label} — ${l.name}`);
+        await expect(page.getByRole('link', { name: l.a11yName, exact: true })).toHaveCount(1);
         if (l === r.lang) await expect(link).toHaveAttribute('aria-current', 'page');
         else await expect(link).not.toHaveAttribute('aria-current');
       }
@@ -154,47 +188,61 @@ test.describe('@d3 #44 Phase 0 language URLs', () => {
     });
   }
 
-  test('P0-AC-05/06/08 head and language across SPA navigation', async ({ page }) => {
+  test('AC-05/08 head and language across SPA navigation', async ({ page }) => {
     const errors = await instrument(page);
-    const ru = LANGS[0], kk = LANGS[1], en = LANGS[2];
     await page.goto('/kk/projects', { waitUntil: 'load' });
     await hydrated(page);
-    await expectHead(page, find(kk, '/projects'));
+    await page.evaluate(() => { window.__spa = 1; });
+    await expectHead(page, find(KK, '/projects'));
 
     await langLinks(page).nth(2).click(); // ENG
     await expect(page).toHaveURL('/en/projects');
-    await expectHead(page, find(en, '/projects'));
+    await expectHead(page, find(EN, '/projects'));
 
     await page.locator('header a', { hasText: 'OpenGov.kz' }).click(); // logo keeps the language
     await expect(page).toHaveURL('/en');
-    await expectHead(page, find(en, '/'));
+    await expectHead(page, find(EN, '/'));
 
-    await page.locator('header nav a[href="/tools"]').click(); // RU-only route keeps EN in memory (pre-#44 behaviour)
-    await expect(page).toHaveURL('/tools');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(async () => {
-      const legacy = await headState(page);
-      expect(legacy.canonicals, 'RU-only route: no stale canonical').toEqual([]);
-      expect(legacy.alternates, 'RU-only route: no stale hreflang').toEqual([]);
-      expect(legacy.robots, 'RU-only route: no stale noindex').toEqual([]);
-      expect(legacy.descriptions).toHaveLength(1);
-    }).toPass({ timeout: 5000 });
+    // #44 Phase 1 (F-06 removed): every menu item is a language URL, the language stays in the URL.
+    for (const path of ['/open-government', '/tools', '/community', '/about']) {
+      await page.locator(`header nav a[href="${urlOf(EN, path)}"]`).click();
+      await expect(page).toHaveURL(urlOf(EN, path));
+      await expect(page.locator('main h1')).toHaveText(h1Of(find(EN, path)));
+      await expectHead(page, find(EN, path)); // no duplicates or stale tags of the previous page (AC-08)
+    }
 
-    await page.locator('main a[href="/en/tools/open-data"]').first().click(); // catalog card keeps /en
-    await expect(page).toHaveURL('/en/tools/open-data');
-    await expectHead(page, find(en, '/tools/open-data'));
+    await page.locator('header nav a[href="/en/tools"]').click();
+    await page.locator('main a[href="/en/tools/legal-acts"]').first().click(); // catalog card keeps /en
+    await expect(page).toHaveURL('/en/tools/legal-acts');
+    await expectHead(page, find(EN, '/tools/legal-acts'));
 
-    await page.locator('header button', { hasText: 'РУС' }).count().then((n) => expect(n, 'no buttons on language URLs').toBe(0));
+    await page.locator('main a[href="/en/tools"]').first().click(); // breadcrumb / «All tools» keep /en
+    await expect(page).toHaveURL('/en/tools');
+    await expectHead(page, find(EN, '/tools'));
+
     await langLinks(page).nth(0).click();
-    await expect(page).toHaveURL('/tools/open-data');
-    await expectHead(page, find(ru, '/tools/open-data'));
+    await expect(page).toHaveURL('/tools');
+    await expectHead(page, find(RU, '/tools'));
+    expect(await page.evaluate(() => window.__spa), 'the whole walk is SPA navigation').toBe(1);
     expect(errors).toEqual([]);
+  });
+
+  test('AC-14 language is not stored in cookies or Web Storage', async ({ page, context }) => {
+    await page.goto('/', { waitUntil: 'load' });
+    await langLinks(page).nth(1).click();
+    await expect(page).toHaveURL('/kk');
+    await page.locator('header nav a[href="/kk/about"]').click();
+    await expect(page).toHaveURL('/kk/about');
+    const storage = await page.evaluate(() => ({ local: { ...localStorage }, session: { ...sessionStorage } }));
+    expect(storage, 'no localStorage / sessionStorage').toEqual({ local: {}, session: {} });
+    const cookies = (await context.cookies()).filter((c) => !c.name.startsWith('_vercel')); // Preview access cookie only
+    expect(cookies, 'no app cookies').toEqual([]);
   });
 });
 
-// P0-AC-09 visual compatibility: the same full-page screenshot on the baseline (RU URL + header button) and on the
-// spike (language URL). The header differs only by button vs link markup, styled the same.
-test.describe('@d3-visual #44 Phase 0 visual comparison', () => {
+// AC-12 visual compatibility (D-2=A): the same full-page screenshot on the baseline Staging (RU URL + header button,
+// before #44) and on the language URL. The header differs only by button vs link markup, styled the same.
+test.describe('@d3-visual #44 visual comparison', () => {
   for (const r of PRERENDERED) {
     test(`visual ${r.url}`, async ({ page }) => {
       if (BASELINE) {
@@ -205,6 +253,7 @@ test.describe('@d3-visual #44 Phase 0 visual comparison', () => {
       }
       await expect(page.locator('main h1')).toHaveText(h1Of(r));
       await page.evaluate(() => document.fonts.ready);
+      await loadImages(page);
       await page.waitForLoadState('networkidle');
       await expect(page).toHaveScreenshot(`${slug(r)}.png`, { fullPage: true, animations: 'disabled' });
     });

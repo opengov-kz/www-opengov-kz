@@ -2,7 +2,7 @@
 // join in the home `participate` section, natural aspect ratio without crop, 800px single column, 560px mobile
 // composition, decorative alt, no horizontal overflow, H1 + primary CTA in the 390×844 first screen.
 import { expect, test } from '@playwright/test';
-import { LOCALES, mainPageText, note, overflow, setLocale } from './helpers.js';
+import { LOCALES, localizedUrl, mainPageText, note, overflow, setLocale } from './helpers.js';
 
 const WIDTHS = [1440, 1024, 801, 800, 799, 768, 561, 560, 559, 390, 375, 320];
 const TARGETS = { '/': 'hero-home-desktop', '/community': 'hero-community', '/about': 'hero-about' };
@@ -94,7 +94,7 @@ test.describe('@human-civic #38', () => {
         await expect(section).toHaveCount(1);
         await expect.soft(section.locator('p').nth(0)).toHaveText(copy.p1);
         await expect.soft(section.locator('p').nth(1)).toHaveText(copy.p2);
-        await expect.soft(section.locator('a[href="/community"]')).toHaveText(copy.cta);
+        await expect.soft(section.locator(`a[href="${localizedUrl('/community', locale)}"]`)).toHaveText(copy.cta); // #44: link keeps the language
         const img = section.locator('img');
         await expect(img).toHaveCount(1);
         const label = `participate ${locale.key} ${width}`;
@@ -116,7 +116,7 @@ test.describe('@human-civic #38', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto('/', { waitUntil: 'load' });
       await setLocale(page, locale);
-      const cta = page.locator('main > div').first().locator('a[href="/open-government"]');
+      const cta = page.locator('main > div').first().locator(`a[href="${localizedUrl('/open-government', locale)}"]`);
       for (const [name, el] of [['h1', page.locator('main h1')], ['primary CTA', cta]]) {
         const b = await el.boundingBox();
         expect.soft(b.y + b.height, `390×844 ${locale.key}: ${name} fully in the first screen`).toBeLessThanOrEqual(844);
