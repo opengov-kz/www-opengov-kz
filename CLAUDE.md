@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Язык общения
+
+С пользователем (Product Owner) общаться только на русском языке: ответы, вопросы, отчёты и пояснения в чате. Код, идентификаторы, имена файлов и сообщения коммитов — по соглашениям, принятым в проекте.
+
 ## Project
 
 OpenGov.kz — a static marketing/showcase site (QBS Solutions) for Kazakhstan's open-data / open-government initiative. React 19 + Vite 6, React Router 7, i18next, CSS Modules. No backend; all content is local. Deployed to Vercel automatically on push to `main`. Approved MVP demonstration URL: https://www-opengov-kz.vercel.app/ (DEC-OGK-MVP-URL-01, approved 2026-11-05). Deployment status alone does not constitute functional acceptance.
@@ -110,3 +114,12 @@ Notion OpenGov.kz является источником продуктовых �
 - **Задания из чата.** ChatGPT формирует задания Claude Code в чате: цель, scope, AC, ограничения, полномочия, требования к evidence. Чат — канал передачи, а не замена Issue, Start Gate или решения PO. Разрешённое read-only исследование без Issue сдаётся в чате без внешней публикации. Claude Artifacts/Docs не заменяют обязательную передачу в Drive.
 - **Notion и OG.** Не переносить в Notion технические отчёты и backlog. Каноническую базу знаний OG не изменять.
 - **Приоритет.** Специальные требования конкретной Issue имеют приоритет над этими правилами.
+
+## Локальные рабочие каталоги Claude Code
+
+Все файлы, которые Claude Code создаёт для работы с проектом, размещаются только внутри каталога проекта. Не создавать рабочие каталоги и файлы результатов вне него (в домашней папке пользователя и т. п.); исключение — scratchpad сессии для временных промежуточных файлов, которые не нужно сохранять.
+
+- **Задачи с GitHub Issue** — по-прежнему только в `.worktrees/ISSUE-N` (см. раздел «Процесс работы с GitHub Issues»).
+- **Задания без Issue** (исследования, дизайн, анализ и прочее) — результаты сохранять в `.evidence/<ТЕМА>/` в корне проекта, например `.evidence/TASTE-EXPLORATION/`. Имя подкаталога — короткое, в верхнем регистре, через дефис.
+- **Локальные копии evidence по Issue** — в `.evidence/ISSUE-N/` (с суффиксом при нескольких раундах, например `ISSUE-25-v12`). Это не заменяет обязательную загрузку в Google Drive `Evidence/Issue-N/` с read-back.
+- Каталог `.evidence/` игнорируется через корневой `.gitignore`; никогда не добавлять его содержимое в индекс. Существующие подкаталоги не удалять и не перезаписывать без разрешения пользователя.
